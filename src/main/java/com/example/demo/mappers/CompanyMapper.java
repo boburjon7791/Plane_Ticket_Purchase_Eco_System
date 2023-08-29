@@ -4,6 +4,7 @@ import com.example.demo.dto.CompanyDto;
 import com.example.demo.entities.Company;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,13 +17,11 @@ public interface CompanyMapper {
     // TODO: 29/08/2023  set lar
     CompanyDto toDto(Company company);
 
-    default List<CompanyDto> toDtoList(List<Company> companies){
+    default Page<CompanyDto> toDtoPage(Page<Company> companies){
         if (companies==null || companies.isEmpty()) {
             return null;
         }
-        List<CompanyDto> companyDtoList = new LinkedList<>();
-        companies.forEach(company -> companyDtoList.add(COMPANY_MAPPER.toDto(company)));
-        return companyDtoList;
+        return companies.map(COMPANY_MAPPER::toDto);
     }
     // TODO: 29/08/2023 set lar
 }

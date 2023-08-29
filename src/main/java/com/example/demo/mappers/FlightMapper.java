@@ -17,21 +17,10 @@ public interface FlightMapper {
     FlightMapper FLIGHT_MAPPER = Mappers.getMapper(FlightMapper.class);
     Flight toEntity(FlightDto flightDto);
     FlightDto toDto(Flight flight);
-    default Page<FlightDto> toDtoList(Page<Flight> flights){
+    default Page<FlightDto> toDtoPage(Page<Flight> flights){
         if (flights==null || flights.isEmpty()) {
             return null;
         }
-        List<FlightDto> flightDtoList = new LinkedList<>();
-        Pageable pageable = flights.getPageable();
-        flights.forEach(flight -> flightDtoList.add(FLIGHT_MAPPER.toDto(flight)));
-        return new PageImpl<>(flightDtoList,pageable,flights.getTotalElements());
-    }
-    default List<FlightDto> toDtoList2(List<Flight> flights){
-        if (flights==null || flights.isEmpty()) {
-            return null;
-        }
-        List<FlightDto> flightDtoList = new LinkedList<>();
-        flights.forEach(flight -> flightDtoList.add(FLIGHT_MAPPER.toDto(flight)));
-        return flightDtoList;
+        return flights.map(FLIGHT_MAPPER::toDto);
     }
 }

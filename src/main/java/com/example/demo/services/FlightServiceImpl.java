@@ -1,7 +1,10 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dto.FlightDto;
+import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.Flight;
+import com.example.demo.mappers.AuthUserMapper;
 import com.example.demo.mappers.FlightMapper;
 import com.example.demo.repositories.FlightRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +48,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightDto> flightsGet(Long authUserId) {
+    public Page<FlightDto> flightsGet(AuthUserDto authUserDto, int size, int page) {
         try {
-            List<Flight> flights = flightRepository.findAllByAuthUserId(authUserId);
-            return flightMapper.toDtoList2(flights);
+            Pageable pageable = PageRequest.of(page,size);
+            AuthUser authUser = AuthUserMapper.AUTH_USER_MAPPER.toEntity(authUserDto);
+            Page<Flight> flights = flightRepository.findAllByAuthUserId(authUser,pageable);
+            return flightMapper.toDtoPage(flights);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log
@@ -71,7 +76,7 @@ public class FlightServiceImpl implements FlightService {
         try {
             Pageable pageable = PageRequest.of(page, limit);
             Page<Flight> flights = flightRepository.findAll(pageable);
-            return flightMapper.toDtoList(flights);
+            return flightMapper.toDtoPage(flights);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log

@@ -27,7 +27,10 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(
+        jsr250Enabled = true,
+        securedEnabled = true
+)
 // TODO: 29/08/2023 jsrf
 public class SecurityConfiguration {
     public final ObjectMapper mapper;

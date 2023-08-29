@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.CompanyDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -10,5 +11,5 @@ public interface CompanyService {
     CompanyDto companyEdit(CompanyDto companyDto);
     CompanyDto companyGet(String name);
     void companyDelete(String name);
-    List<CompanyDto> getAllCompanies();
+    Page<CompanyDto> getAllCompanies(int size,int limit);
 }

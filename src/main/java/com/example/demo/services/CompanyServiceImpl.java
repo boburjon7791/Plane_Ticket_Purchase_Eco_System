@@ -5,6 +5,9 @@ import com.example.demo.entities.Company;
 import com.example.demo.mappers.CompanyMapper;
 import com.example.demo.repositories.CompanyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,10 +66,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> getAllCompanies() {
+    public Page<CompanyDto> getAllCompanies(int page,int size) {
         try {
-            List<Company> all = companyRepository.findAll();
-            return companyMapper.toDtoList(all);
+            Pageable pageable = PageRequest.of(page,size);
+            Page<Company> all = companyRepository.findAll(pageable);
+            return companyMapper.toDtoPage(all);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log

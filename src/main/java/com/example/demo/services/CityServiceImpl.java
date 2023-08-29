@@ -5,6 +5,9 @@ import com.example.demo.entities.City;
 import com.example.demo.mappers.CityMapper;
 import com.example.demo.repositories.CityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,10 +66,11 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public List<CityDto> getAllCity() {
+    public Page<CityDto> getAllCities(int size,int page) {
         try {
-            List<City> cities = cityRepository.findAll();
-            return cityMapper.toDtoList(cities);
+            Pageable pageable = PageRequest.of(page,size);
+            Page<City> all = cityRepository.findAll(pageable);
+            return cityMapper.toDtoPage(all);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log
