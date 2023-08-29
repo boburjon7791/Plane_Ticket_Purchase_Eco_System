@@ -32,6 +32,13 @@ public class Company {
     @NotNull
     private Set<AuthUser> agent=new HashSet<>();
 
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @Builder.Default
+    @NotNull
+    private Set<Airport> airports=new HashSet<>();
+
     public void addAgent(AuthUser agent) {
         if (agent.getRole().name().equals("AGENT")) {
             this.agent.add(agent);
@@ -39,5 +46,11 @@ public class Company {
     }
     public void remove(AuthUser agent){
         this.agent.remove(agent);
+    }
+    public void addAirport(Airport airport) {
+            this.airports.add(airport);
+    }
+    public void remove(Airport airport){
+        this.airports.remove(airport);
     }
 }

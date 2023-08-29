@@ -5,12 +5,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtTokenUtil {
@@ -78,5 +82,42 @@ public class JwtTokenUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static void addCookie(HttpServletRequest req, HttpServletResponse res,
+                                 String name, Object value) {
+        Cookie[] cookies = req.getCookies();
+        Cookie cookie = new Cookie(name, String.valueOf(value));
+        cookie.setSecure(false);
+        cookie.setMaxAge(24*60*60);
+        cookie.setHttpOnly(false);
+        if (cookies==null) {
+            res.addCookie(cookie);
+            return;
+        }
+
+        Optional<Cookie> first = Arrays.stream(cookies)
+                .filter(cookie1 -> cookie1.getName().equals(name))
+                .findFirst();
+        first.orElse(cookie).setMaxAge(cookie.getMaxAge());
+        res.addCookie(first.orElse(cookie));
+    }
+
+    public static void removeCookie(HttpServletRequest req, HttpServletResponse res,
+                                    String name, Object value) {
+        Cookie[] cookies = req.getCookies();
+        Cookie cookie = new Cookie(name, String.valueOf(value));
+        cookie.setSecure(false);
+        cookie.setMaxAge(-1);
+        cookie.setHttpOnly(false);
+        if (cookies==null) {
+            return;
+        }
+        Optional<Cookie> first = Arrays.stream(cookies)
+                .filter(cookie1 -> cookie1.getName().equals(name))
+                .findFirst();
+        assert first.orElse(null) != null;
+        first.orElse(null).setValue(null);
+        res.addCookie(first.get());
     }
 }
