@@ -18,6 +18,9 @@ public interface CityMapper {
     CityDto toDto(City city);
 
     default List<CityDto> toDtoList(List<City> cities){
+        if (cities==null || cities.isEmpty()) {
+            return null;
+        }
         List<CityDto> cityDtoList = new LinkedList<>();
         cities.forEach(city -> cityDtoList.add(CITY_MAPPER.toDto(city)));
         return cityDtoList;
