@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,12 +49,11 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Page<FlightDto> flightsGet(AuthUserDto authUserDto, int size, int page) {
+    public FlightDto flightsGet(UUID id) {
         try {
-            Pageable pageable = PageRequest.of(page,size);
-            AuthUser authUser = AuthUserMapper.AUTH_USER_MAPPER.toEntity(authUserDto);
-            Page<Flight> flights = flightRepository.findAllByAuthUserId(authUser,pageable);
-            return flightMapper.toDtoPage(flights);
+            Optional<Flight> byId = flightRepository.findById(id);
+            Flight flight = byId.orElseThrow(RuntimeException::new);
+            return flightMapper.toDto(flight);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log
