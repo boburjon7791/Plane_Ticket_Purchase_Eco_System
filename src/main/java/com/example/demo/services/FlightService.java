@@ -10,7 +10,7 @@ import java.util.*;
 public interface FlightService {
     FlightDto flightCreate(FlightDto flightDto);
     FlightDto flightEdit(FlightDto flightDto);
-    FlightDto flightGet(Long authUserId);
+    List<FlightDto> flightsGet(Long authUserId);
     void flightDelete(UUID id);
     Page<FlightDto> getAllFlights(int limit, int page);
 }

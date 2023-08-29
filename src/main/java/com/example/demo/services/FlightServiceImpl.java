@@ -45,10 +45,10 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightDto flightGet(Long authUserId) {
+    public List<FlightDto> flightsGet(Long authUserId) {
         try {
-            Flight flight = flightRepository.findByAuthUserId(authUserId);
-            return flightMapper.toDto(flight);
+            List<Flight> flights = flightRepository.findAllByAuthUserId(authUserId);
+            return flightMapper.toDtoList2(flights);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log

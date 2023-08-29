@@ -26,4 +26,12 @@ public interface FlightMapper {
         flights.forEach(flight -> flightDtoList.add(FLIGHT_MAPPER.toDto(flight)));
         return new PageImpl<>(flightDtoList,pageable,flights.getTotalElements());
     }
+    default List<FlightDto> toDtoList2(List<Flight> flights){
+        if (flights==null || flights.isEmpty()) {
+            return null;
+        }
+        List<FlightDto> flightDtoList = new LinkedList<>();
+        flights.forEach(flight -> flightDtoList.add(FLIGHT_MAPPER.toDto(flight)));
+        return flightDtoList;
+    }
 }
