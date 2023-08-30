@@ -1,10 +1,8 @@
 package com.example.demo;
 
 import com.example.demo.entities.*;
-import com.example.demo.repositories.AirportRepository;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CityRepository;
-import com.example.demo.repositories.CompanyRepository;
 import com.example.demo.util.BaseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -12,12 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.ZoneId;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.UUID;
 
 @SpringBootApplication
 @RequiredArgsConstructor
