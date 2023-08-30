@@ -38,4 +38,14 @@ public class Flight {
     @ToString.Exclude
     @Builder.Default
     private Set<AuthUser> authUsers=new HashSet<>();
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
+    @NotNull
+    private Set<City> from = new HashSet<>();
+
+    @NotNull
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
+    private Set<City> to = new HashSet<>();
 }

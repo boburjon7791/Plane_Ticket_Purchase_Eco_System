@@ -57,6 +57,20 @@ CREATE TABLE IF NOT EXISTS system_of_airline.city_airports
     CONSTRAINT city_airports_pkey PRIMARY KEY (city_id, airports_id)
 );
 
+CREATE TABLE IF NOT EXISTS system_of_airline.city_flights
+(
+    city_id uuid NOT NULL,
+    flights_id uuid NOT NULL,
+    CONSTRAINT city_flights_pkey PRIMARY KEY (city_id, flights_id)
+);
+
+CREATE TABLE IF NOT EXISTS system_of_airline.city_flights2
+(
+    city_id uuid NOT NULL,
+    flights2_id uuid NOT NULL,
+    CONSTRAINT city_flights2_pkey PRIMARY KEY (city_id, flights2_id)
+);
+
 CREATE TABLE IF NOT EXISTS system_of_airline.company
 (
     id uuid NOT NULL,
@@ -73,6 +87,20 @@ CREATE TABLE IF NOT EXISTS system_of_airline.flight
     CONSTRAINT flight_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS system_of_airline.flight_from
+(
+    flight_id uuid NOT NULL,
+    from_id uuid NOT NULL,
+    CONSTRAINT flight_from_pkey PRIMARY KEY (flight_id, from_id)
+);
+
+CREATE TABLE IF NOT EXISTS system_of_airline.flight_to
+(
+    flight_id uuid NOT NULL,
+    to_id uuid NOT NULL,
+    CONSTRAINT flight_to_pkey PRIMARY KEY (flight_id, to_id)
+);
+
 ALTER TABLE IF EXISTS system_of_airline.activate_codes
     ADD CONSTRAINT fk6qy5dtqdqqoa8hkkdryr3si8o FOREIGN KEY (auth_user_id)
     REFERENCES system_of_airline.auth_user (id) MATCH SIMPLE
@@ -85,8 +113,8 @@ ALTER TABLE IF EXISTS system_of_airline.airport
     REFERENCES system_of_airline.company (id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
- 
- 
+
+
 ALTER TABLE IF EXISTS system_of_airline.airport_cities
     ADD CONSTRAINT fkf8496cpnvbyw5pbrfqjpm68nj FOREIGN KEY (cities_id)
     REFERENCES system_of_airline.city (id) MATCH SIMPLE
@@ -129,9 +157,65 @@ ALTER TABLE IF EXISTS system_of_airline.city_airports
     ON DELETE NO ACTION;
 
 
+ALTER TABLE IF EXISTS system_of_airline.city_flights
+    ADD CONSTRAINT fkgfj27qi59ni9ica1pls2tr8jt FOREIGN KEY (city_id)
+    REFERENCES system_of_airline.city (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.city_flights
+    ADD CONSTRAINT fkglq16abw7dy5u8u9suo3hd88j FOREIGN KEY (flights_id)
+    REFERENCES system_of_airline.flight (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.city_flights2
+    ADD CONSTRAINT fk2jc4l4kbm5tuj9mjfpd5h0r23 FOREIGN KEY (city_id)
+    REFERENCES system_of_airline.city (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.city_flights2
+    ADD CONSTRAINT fkroq6ih1ewbkhs1mwxw0lbynfa FOREIGN KEY (flights2_id)
+    REFERENCES system_of_airline.flight (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
 ALTER TABLE IF EXISTS system_of_airline.flight
     ADD CONSTRAINT fk806y3y5ikum10nt8x9fbxbk3n FOREIGN KEY (airport_id)
     REFERENCES system_of_airline.airport (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.flight_from
+    ADD CONSTRAINT fkc1hah8af0f94qhu531sn0q5ue FOREIGN KEY (from_id)
+    REFERENCES system_of_airline.city (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.flight_from
+    ADD CONSTRAINT fke7chw2e3ripuptqk4sc8rgyqx FOREIGN KEY (flight_id)
+    REFERENCES system_of_airline.flight (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.flight_to
+    ADD CONSTRAINT fk4ymiqktnib30thcw8w7qe54q8 FOREIGN KEY (to_id)
+    REFERENCES system_of_airline.city (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.flight_to
+    ADD CONSTRAINT fk8jk0rrgsdj691r0tvl84ca9vi FOREIGN KEY (flight_id)
+    REFERENCES system_of_airline.flight (id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 

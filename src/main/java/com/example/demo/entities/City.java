@@ -35,6 +35,14 @@ public class City {
     @NotNull
     private Set<Airport> airports=new HashSet<>();
 
+    @NotNull
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    Set<Flight> flights = new HashSet<>();
+
+    @NotNull
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    Set<Flight> flights2 = new HashSet<>();
+
     public void addAirports(Airport airport) {
         this.airports.add(airport);
     }
