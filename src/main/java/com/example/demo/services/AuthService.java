@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthService {
-    AuthUserDto register(@NonNull AuthUserDto authUserDto, HttpServletResponse res, HttpServletRequest req);
+    void register(@NonNull AuthUserDto authUserDto, HttpServletResponse res, HttpServletRequest req);
     void activate(@NonNull Integer code, @NonNull String email,
                   HttpServletRequest req, HttpServletResponse res);
     void generateAgainActivationCode(@NonNull String email, HttpServletRequest req, HttpServletResponse res);
+
+    String login(String email, String password);
 }

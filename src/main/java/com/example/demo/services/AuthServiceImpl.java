@@ -30,11 +30,12 @@ public class AuthServiceImpl implements AuthService {
                     This is confirmation code.
                     Do not give this code to any person.
                     """;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    public AuthUserDto register(@NonNull AuthUserDto authUserDto,
-                                HttpServletResponse res,
-                                HttpServletRequest req){
+    public void register(@NonNull AuthUserDto authUserDto,
+                         HttpServletResponse res,
+                         HttpServletRequest req){
         try {
             AuthUser authUser =
                     authUserMapper.toEntity(authUserDto);
@@ -51,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
             activateCodesRepository.save(activateCodes);
             javaMailSenderService.send(activateCodes,specialMessage);
             JwtTokenUtil.addCookie(req,res,"email",saved.getEmail());
-            return authUserMapper.toDto(saved);
+            authUserMapper.toDto(saved);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log
@@ -100,5 +101,10 @@ public class AuthServiceImpl implements AuthService {
             e.printStackTrace();
             // TODO: 29/08/2023 log
         }
+    }
+
+    @Override
+    public String login(String email, String password) {
+        return jwtTokenUtil.generateToken(email,password);
     }
 }

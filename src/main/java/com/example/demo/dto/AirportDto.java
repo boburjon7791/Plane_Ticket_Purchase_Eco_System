@@ -23,9 +23,9 @@ public class AirportDto {
      @NotBlank
      public String name;
      @NotNull
-     public Company company;
+     public CompanyDto company;
      @Builder.Default
-     public Set<Flight> flights=new HashSet<>();
+     public Set<FlightDto> flights=new HashSet<>();
      @Builder.Default
-     public Set<City> cities=new HashSet<>();
+     public Set<CityDto> cities=new HashSet<>();
 }

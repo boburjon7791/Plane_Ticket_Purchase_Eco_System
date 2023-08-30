@@ -1,15 +1,22 @@
 package com.example.demo.util;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
-@PropertySource("classpath:application-cities.yaml")
 public class BaseUtil {
-    @Value ("${cities}")
-    public static Set<String> cities = new HashSet<>();
+    public static Collection<String> cities = new HashSet<>();
+    static {
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/cities.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                cities.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -19,5 +19,7 @@ public class CompanyDto {
     @NotBlank
     public String name;
     @Builder.Default
+    public Set<AirportDto> airports=new HashSet<>();
+    @Builder.Default
     public Set<AuthUserDto> agent = new HashSet<>();
 }

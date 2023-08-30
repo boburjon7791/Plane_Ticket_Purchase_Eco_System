@@ -10,6 +10,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootApplication
@@ -26,13 +29,16 @@ public class DemoApplication {
    public CommandLineRunner runner(){
 	   return args -> {
 		   try {
-			   Set<String> cityNames = BaseUtil.cities;
+			   Collection<String> cityNames = BaseUtil.cities;
+			   Collection<City> cities = new HashSet<>();
 			   cityNames.forEach(s -> {
 				   City city = City.builder()
 						   .name(s).build();
-				   cityRepository.save(city);
-				   System.out.println("city = " + city);
+				   cities.add(city);
 			   });
+
+			   cityRepository.saveAll(cities);
+
 			   AuthUser admin = AuthUser.builder()
 					   .email("admin123@mail.com")
 					   .blocked(false)
@@ -41,11 +47,9 @@ public class DemoApplication {
 					   .password(passwordEncoder.encode("11223344"))
 					   .role(Auditable.Role.ADMIN)
 					   .build();
-			   authUserRepository.save(admin);
-			   System.out.println("admin = " + admin);
-		   }catch (Exception e){
-			   e.printStackTrace();
-		   }
+//			   authUserRepository.save(admin);
+//			   System.out.println("admin = " + admin);
+		   }catch (Exception ignore){}
 	   };
    }
 }

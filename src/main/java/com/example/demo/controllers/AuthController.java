@@ -6,20 +6,30 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api.auth")
 @RequiredArgsConstructor
+@PreAuthorize("permitAll()")
 public class AuthController {
     public final AuthService authService;
     @PostMapping("/register")
-    public ResponseEntity<AuthUserDto> register(@RequestBody AuthUserDto authUserDto,
+    public void register(@RequestBody AuthUserDto authUserDto,
                                                 HttpServletResponse res,
                                                 HttpServletRequest req){
-        AuthUserDto register = authService.register(authUserDto,res,req);
-        return ResponseEntity.ok(register);
+        authService.register(authUserDto,res,req);
     }
+    @PostMapping("/login")
+    public String login(@RequestParam Map<String,String> param){
+        String email = param.get("email");
+        String password = param.get("password");
+        return authService.login(email,password);
+    }
+
     @PostMapping("/activate/{code}")
     public void activate(@PathVariable Integer code,@CookieValue(name = "email") String email,
                          HttpServletRequest req, HttpServletResponse res){
