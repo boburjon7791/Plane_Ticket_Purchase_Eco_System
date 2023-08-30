@@ -25,7 +25,7 @@ public class CompanyController {
     }
     @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
-    public Page<CompanyDto> getAll(@RequestParam(required = false) Map<String,String> param){
+    public Page<CompanyDto> getAll(@RequestParam Map<String,String> param){
         int page= Integer.parseInt(param.getOrDefault("page","0"));
         int size= Integer.parseInt(param.getOrDefault("size","5"));
         return companyService.getAllCompanies(page, size);

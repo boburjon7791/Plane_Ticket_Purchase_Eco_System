@@ -1,6 +1,8 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.FlightDto;
+import com.example.demo.entities.AuthUser;
+import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.services.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -19,6 +22,7 @@ import java.util.UUID;
 @PreAuthorize("hasRole('AGENT')")
 public class FlightController {
     public final FlightService flightService;
+    private final AuthUserRepository authUserRepository;
 
     @PostMapping("/create")
     public ResponseEntity<FlightDto> createFlight(@RequestBody @Valid FlightDto flightDto){
@@ -33,7 +37,7 @@ public class FlightController {
     }
     @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
-    public Page<FlightDto> getAll(@RequestParam(required = false) Map<String,String> param){
+    public Page<FlightDto> getAll(@RequestParam Map<String,String> param){
         int size= Integer.parseInt(param.getOrDefault("size","5"));
         int page= Integer.parseInt(param.getOrDefault("page","0"));
         return flightService.getAllFlights(size, page);
@@ -44,6 +48,22 @@ public class FlightController {
         flightDto.setId(id);
         FlightDto edit = flightService.flightEdit(flightDto);
         return new ResponseEntity<>(edit,HttpStatus.OK);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/reserve/{id}")
+    public void reserveFlight(@PathVariable UUID id,
+                                                  @Valid @RequestBody FlightDto flightDto,
+                                                  @RequestParam UUID userID){
+        flightDto.setId(id);
+        flightService.flightReserve(flightDto,userID);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/cancel/{id}")
+    public void cancelFlight(@PathVariable UUID id,
+                                                  @Valid @RequestBody FlightDto flightDto,
+                                                  @RequestParam UUID userID){
+        flightDto.setId(id);
+        flightService.flightCancel(flightDto,userID);
     }
     @DeleteMapping("/delete/{id}")
     public void deleteFlight(@PathVariable UUID id){

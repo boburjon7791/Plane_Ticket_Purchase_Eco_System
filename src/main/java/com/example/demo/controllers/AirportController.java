@@ -31,7 +31,7 @@ public class AirportController {
     }
     @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
-    public Page<AirportDto> getAll(@RequestParam(required = false)Map<String,String> param){
+    public Page<AirportDto> getAll(@RequestParam Map<String,String> param){
         int page = Integer.parseInt(param.getOrDefault("size","5"));
         int size = Integer.parseInt(param.getOrDefault("page","0"));
         return airportService.getAll(size, page);

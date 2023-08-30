@@ -24,7 +24,7 @@ public class CityController {
     }
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/get/all")
-    public Page<CityDto> getAll(@RequestParam(required = false) Map<String,String> param){
+    public Page<CityDto> getAll(@RequestParam Map<String,String> param){
         String Page = param.getOrDefault("page", "0");
         String Size = param.getOrDefault("size", "5");
         int page = Integer.parseInt(Page);

@@ -16,4 +16,7 @@ public interface FlightService {
     FlightDto flightsGet(UUID id);
     void flightDelete(UUID id);
     Page<FlightDto> getAllFlights(int limit, int page);
+
+    void flightReserve(FlightDto flightDto, UUID userID);
+    void flightCancel(FlightDto flightDto, UUID userID);
 }

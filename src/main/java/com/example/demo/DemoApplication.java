@@ -77,7 +77,9 @@ public class DemoApplication {
 				.pathsToMatch("/api.flight/get/**",
 						"/api.city/get/**",
 						"/api.airport/get/**",
-						"/api.auth/**")
+						"/api.auth/**",
+						"/api.flight/reserve/**",
+						"/api.flight/cancel/**")
 				.build();
 	}
 }

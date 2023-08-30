@@ -2,8 +2,10 @@ package com.example.demo.services;
 
 
 import com.example.demo.dto.FlightDto;
+import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.Flight;
 import com.example.demo.mappers.FlightMapper;
+import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class FlightServiceImpl implements FlightService {
     public final FlightRepository flightRepository;
     public final FlightMapper flightMapper;
     private final AgentService agentService;
+    private final AuthUserRepository authUserRepository;
 
     @Override
     public FlightDto flightCreate(FlightDto flightDto) {
@@ -90,6 +93,39 @@ public class FlightServiceImpl implements FlightService {
             e.printStackTrace();
             // TODO: 29/08/2023 log
             return null;
+        }
+    }
+
+    @Override
+    public void flightReserve(FlightDto flightDto, UUID userID) {
+        try {
+            Optional<AuthUser> byId = authUserRepository.findById(userID);
+            AuthUser authUser = byId.orElseThrow();
+            flightDto.setId(userID);
+            flightDto.getAuthUsers().add(authUser);
+            flightDto.setAuthUsers(flightDto.getAuthUsers());
+            Flight flight = flightMapper.toEntity(flightDto);
+            flightRepository.save(flight);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("{}",Arrays.toString(e.getStackTrace()));
+        }
+    }
+
+    @Override
+    public void flightCancel(FlightDto flightDto, UUID userID) {
+        try {
+        Optional<AuthUser> byId = authUserRepository.findById(userID);
+        AuthUser authUser = byId.orElseThrow();
+        flightDto.setId(userID);
+        flightDto.getAuthUsers().remove(authUser);
+        flightDto.setAuthUsers(flightDto.getAuthUsers());
+        Flight flight = flightMapper.toEntity(flightDto);
+        flightRepository.save(flight);
+        log.info("{} user canceled {}",authUser,flight);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("{}",Arrays.toString(e.getStackTrace()));
         }
     }
 }
