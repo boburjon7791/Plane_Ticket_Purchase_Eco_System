@@ -25,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
     public final AuthUserRepository authUserRepository;
     private final ActivateCodesRepository activateCodesRepository;
     private final JavaMailSenderService javaMailSenderService;
+    private final AuthUserMapper authUserMapper;
     private static final String specialMessage = """
                     This is confirmation code.
                     Do not give this code to any person.
@@ -36,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
                                 HttpServletRequest req){
         try {
             AuthUser authUser =
-                    AuthUserMapper.AUTH_USER_MAPPER.toEntity(authUserDto);
+                    authUserMapper.toEntity(authUserDto);
 
             AuthUser saved = authUserRepository.save(authUser);
             UUID id = saved.getId();
@@ -50,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
             activateCodesRepository.save(activateCodes);
             javaMailSenderService.send(activateCodes,specialMessage);
             JwtTokenUtil.addCookie(req,res,"email",saved.getEmail());
-            return AuthUserMapper.AUTH_USER_MAPPER.toDto(saved);
+            return authUserMapper.toDto(saved);
         }catch (Exception e){
             e.printStackTrace();
             // TODO: 29/08/2023 log

@@ -1,10 +1,8 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.AuthUserDto;
+
 import com.example.demo.dto.FlightDto;
-import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.Flight;
-import com.example.demo.mappers.AuthUserMapper;
 import com.example.demo.mappers.FlightMapper;
 import com.example.demo.repositories.FlightRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FlightServiceImpl implements FlightService {
     public final FlightRepository flightRepository;
-    public final FlightMapper flightMapper = FlightMapper.FLIGHT_MAPPER;
+    public final FlightMapper flightMapper;
     private final AgentService agentService;
 
     @Override

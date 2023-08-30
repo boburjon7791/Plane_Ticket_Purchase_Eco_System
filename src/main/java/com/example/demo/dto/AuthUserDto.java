@@ -20,7 +20,9 @@ public class AuthUserDto {
     @Email
     @NotBlank
     public String email;
+    @Builder.Default
     public Company company=null;
+    @Builder.Default
     public Flight flight=null;
     @NotBlank
     @Size(min = 8)

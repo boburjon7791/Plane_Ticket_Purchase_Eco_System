@@ -7,15 +7,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import lombok.experimental.SuperBuilder;
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 @ToString

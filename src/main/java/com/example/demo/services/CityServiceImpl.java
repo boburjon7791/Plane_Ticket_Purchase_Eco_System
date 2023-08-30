@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CityServiceImpl implements CityService {
     public final CityRepository cityRepository;
-    public final CityMapper cityMapper = CityMapper.CITY_MAPPER;
+    public final CityMapper cityMapper;
     @Override
     public CityDto cityCreate(CityDto cityDto) {
         City city = cityMapper.toEntity(cityDto);

@@ -18,8 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
-                AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
-                return User.builder()
+            AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
+            return User.builder()
                         .username(email)
                         .password(authUser.getPassword())
                         .credentialsExpired(false)

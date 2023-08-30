@@ -5,12 +5,12 @@ import com.example.demo.entities.Airport;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
-import java.util.List;
-@Mapper
+@Mapper(componentModel = "spring")
+@Component
 public interface AirportMapper {
-    AirportMapper AIRPORT_MAPPER = Mappers.getMapper(AirportMapper.class);
+//    AirportMapper AIRPORT_MAPPER = Mappers.getMapper(AirportMapper.class);
     Airport toEntity(AirportDto airportDto);
     AirportDto toDto(Airport airport);
 
@@ -18,6 +18,6 @@ public interface AirportMapper {
         if (airports==null || airports.isEmpty()) {
             return null;
         }
-        return airports.map(AIRPORT_MAPPER::toDto);
+        return airports.map(this::toDto);
     }
 }

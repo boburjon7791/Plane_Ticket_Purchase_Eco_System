@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     public final AuthUserRepository authUserRepository;
-    public final AuthUserMapper authUserMapper=AuthUserMapper.AUTH_USER_MAPPER;
+    public final AuthUserMapper authUserMapper;
     @Override
     public AuthUserDto updateAuthUser(AuthUserDto authUserDto) {
         try {

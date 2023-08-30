@@ -5,12 +5,14 @@ import com.example.demo.entities.AuthUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
-@Mapper
+@Mapper(componentModel = "spring")
+@Component
 public interface AuthUserMapper {
-   AuthUserMapper AUTH_USER_MAPPER = Mappers.getMapper(AuthUserMapper.class);
+//   AuthUserMapper AUTH_USER_MAPPER = Mappers.getMapper(AuthUserMapper.class);
    AuthUser toEntity(AuthUserDto authUserDto);
    AuthUserDto toDto(AuthUser authUser);
 
@@ -18,6 +20,6 @@ public interface AuthUserMapper {
       if (authUsers==null || authUsers.isEmpty()) {
          return null;
       }
-      return authUsers.map(AUTH_USER_MAPPER::toDto);
+      return authUsers.map(this::toDto);
    }
 }
