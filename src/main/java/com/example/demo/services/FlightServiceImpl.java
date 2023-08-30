@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +22,8 @@ import java.util.UUID;
 public class FlightServiceImpl implements FlightService {
     public final FlightRepository flightRepository;
     public final FlightMapper flightMapper = FlightMapper.FLIGHT_MAPPER;
+    private final AgentService agentService;
+
     @Override
     public FlightDto flightCreate(FlightDto flightDto) {
         try {
@@ -36,8 +40,12 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightDto flightEdit(FlightDto flightDto) {
         try {
+            UUID id = flightDto.getId();
+            Optional<Flight> byId = flightRepository.findById(id);
+            LocalDateTime oldTime = byId.orElseThrow().getLocalDateTime();
             Flight flight = flightMapper.toEntity(flightDto);
             Flight save = flightRepository.save(flight);
+            agentService.sendReportEditFlight(save,oldTime);
             return flightMapper.toDto(save);
         }catch (Exception e){
             e.printStackTrace();
