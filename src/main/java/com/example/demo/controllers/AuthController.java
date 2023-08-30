@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api.auth")
@@ -31,8 +32,10 @@ public class AuthController {
     }
 
     @PostMapping("/activate/{code}")
-    public void activate(@PathVariable Integer code,@CookieValue(name = "email") String email,
+    public void activate(@RequestParam Map<String,String> param,
                          HttpServletRequest req, HttpServletResponse res){
+        Integer code = Integer.valueOf(param.get("code"));
+        String email = param.get("email");
         authService.activate(code,email,req,res);
     }
     @PostMapping("/again-sent-code")

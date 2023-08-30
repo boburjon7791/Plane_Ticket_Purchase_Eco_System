@@ -31,7 +31,7 @@ public class FlightController {
         FlightDto flightDto = flightService.flightsGet(id);
         return new ResponseEntity<>(flightDto,HttpStatus.OK);
     }
-    @GetMapping("/get-all")
+    @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
     public Page<FlightDto> getAll(@RequestParam(required = false) Map<String,String> param){
         int size= Integer.parseInt(param.getOrDefault("size","5"));

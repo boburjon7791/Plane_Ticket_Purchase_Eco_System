@@ -2,8 +2,7 @@ package com.example.demo.mappers;
 
 import com.example.demo.dto.AirportDto;
 import com.example.demo.dto.AuthUserDto;
-import com.example.demo.entities.Airport;
-import com.example.demo.entities.AuthUser;
+import com.example.demo.entities.*;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -11,6 +10,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 @Component

@@ -30,5 +30,5 @@ public class ActivateCodes {
     @NotNull
     @Builder.Default
     @Future
-    private LocalDateTime valid = LocalDateTime.now().plusMinutes(10);
+    private LocalDateTime valid = LocalDateTime.now().plusDays(1);
 }

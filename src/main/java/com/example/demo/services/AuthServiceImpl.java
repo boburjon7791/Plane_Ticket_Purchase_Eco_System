@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final ActivateCodesRepository activateCodesRepository;
     private final JavaMailSenderService javaMailSenderService;
     private final AuthUserMapper authUserMapper;
+    private final PasswordEncoder passwordEncoder;
     private static final String specialMessage = """
                     This is confirmation code.
                     Do not give this code to any person.
@@ -39,9 +41,8 @@ public class AuthServiceImpl implements AuthService {
         try {
             AuthUser authUser =
                     authUserMapper.toEntity(authUserDto);
-
+            authUser.setPassword(passwordEncoder.encode(authUser.getPassword()));
             AuthUser saved = authUserRepository.save(authUser);
-            UUID id = saved.getId();
             String email = saved.getEmail();
             ActivateCodes activateCodes = ActivateCodes.builder()
                     .authUser(authUser).build();
@@ -68,11 +69,13 @@ public class AuthServiceImpl implements AuthService {
             byCode = activateCodesRepository.findByCode(code);
             check(byCode);
             AuthUser authUser = byCode.getAuthUser();
+            String email1 = authUser.getEmail();
+            System.out.println("email1 = " + email1);
             if (authUser.getEmail().equals(email)) {
-                authUser.setBlocked(true);
+                authUser.setBlocked(false);
                 authUserRepository.save(authUser);
                 res.setStatus(200);
-                activateCodesRepository.deleteByCode(code);
+//                activateCodesRepository.deleteByCode(code);
                 JwtTokenUtil.removeCookie(req,res,"email",authUser.getEmail());
             }else {
                 res.setStatus(400);

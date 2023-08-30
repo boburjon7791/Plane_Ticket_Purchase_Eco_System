@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.entities.Airport;
+import com.example.demo.entities.AuthUser;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -18,7 +20,7 @@ public class FlightDto {
     @NotNull
     public LocalDateTime localDateTime;
     @NotNull
-    public AirportDto airport;
+    public Airport airport;
     @NotNull
-    public Set<AuthUserDto> authUsers;
+    public Set<AuthUser> authUsers;
 }

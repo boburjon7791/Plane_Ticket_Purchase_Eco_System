@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.dto.AirportDto;
 import com.example.demo.entities.Airport;
+import com.example.demo.entities.Company;
 import com.example.demo.mappers.AirportMapper;
 import com.example.demo.repositories.AirportRepository;
 import lombok.RequiredArgsConstructor;

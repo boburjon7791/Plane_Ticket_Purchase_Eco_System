@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
 
+import com.example.demo.entities.Airport;
+import com.example.demo.entities.AuthUser;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -19,7 +21,7 @@ public class CompanyDto {
     @NotBlank
     public String name;
     @Builder.Default
-    public Set<AirportDto> airports=new HashSet<>();
+    public Set<Airport> airports=new HashSet<>();
     @Builder.Default
-    public Set<AuthUserDto> agent = new HashSet<>();
+    public Set<AuthUser> agent = new HashSet<>();
 }

@@ -23,7 +23,7 @@ public class CityController {
         return new ResponseEntity<>(create, HttpStatus.CREATED);
     }
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/get-all")
+    @GetMapping("/get/all")
     public Page<CityDto> getAll(@RequestParam(required = false) Map<String,String> param){
         String Page = param.getOrDefault("page", "0");
         String Size = param.getOrDefault("size", "5");
@@ -32,7 +32,7 @@ public class CityController {
         return cityService.getAllCities(page, size);
     }
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{name}")
+    @GetMapping("/get/{name}")
     public ResponseEntity<CityDto> getCity(@PathVariable String name){
         CityDto cityDto = cityService.cityRead(name);
         return new ResponseEntity<>(cityDto, HttpStatus.OK);

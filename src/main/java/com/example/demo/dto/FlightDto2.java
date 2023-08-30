@@ -1,12 +1,11 @@
 package com.example.demo.dto;
 
-
 import com.example.demo.entities.Airport;
-import jakarta.validation.constraints.NotBlank;
+import com.example.demo.entities.AuthUser;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.HashSet;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,10 +15,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class CityDto {
+public class FlightDto2 {
     public UUID id;
-    @NotBlank
-    public String name;
-    @Builder.Default
-    public Set<Airport> airports = new HashSet<>();
+    @NotNull
+    public LocalDateTime localDateTime;
+    @NotNull
+    public Airport airport;
+    @NotNull
+    public Set<AuthUser> authUsers;
 }

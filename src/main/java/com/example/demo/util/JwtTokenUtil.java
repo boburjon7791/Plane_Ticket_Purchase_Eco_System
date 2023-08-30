@@ -29,6 +29,7 @@ public class JwtTokenUtil {
     public final PasswordEncoder passwordEncoder;
     public String generateToken(@NonNull String username,@NonNull String password){
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
         if(!passwordEncoder.matches(password,userDetails.getPassword())){
             throw new RuntimeException();
         }

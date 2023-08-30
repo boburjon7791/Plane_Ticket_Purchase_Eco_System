@@ -23,7 +23,7 @@ public class CompanyController {
         CompanyDto created = companyService.companyCreate(companyDto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
-    @GetMapping("/get-all")
+    @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
     public Page<CompanyDto> getAll(@RequestParam(required = false) Map<String,String> param){
         int page= Integer.parseInt(param.getOrDefault("page","0"));

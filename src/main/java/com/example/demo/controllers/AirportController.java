@@ -29,7 +29,7 @@ public class AirportController {
         AirportDto airport = airportService.getAirport(name);
         return new ResponseEntity<>(airport,HttpStatus.OK);
     }
-    @GetMapping("/get-all")
+    @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
     public Page<AirportDto> getAll(@RequestParam(required = false)Map<String,String> param){
         int page = Integer.parseInt(param.getOrDefault("size","5"));

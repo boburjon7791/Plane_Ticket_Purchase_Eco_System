@@ -16,7 +16,7 @@ class AirportMapperTest {
 
     @Test
     void toEntity() {
-        CompanyDto company = CompanyDto.builder()
+        Company company = Company.builder()
                 .id(UUID.randomUUID())
                 .name("t-way")
                 .build();
@@ -25,12 +25,9 @@ class AirportMapperTest {
                 .name("airport-one")
                 .company(company)
                 .build();
-        HashSet<AirportDto> objects = new HashSet<>();
-        objects.add(dto);
-        company.setAirports(objects);
         System.out.println("dto = " + dto);
         AirportMapper airportMapper = Mappers.getMapper(AirportMapper.class);
-        Airport airport = airportMapper.toEntity(dto);
+        Airport airport = airportMapper.toEntity(dto,new CycleAvoidingMappingContext());
         System.out.println("airport = " + airport);
     }
 
@@ -50,7 +47,7 @@ class AirportMapperTest {
         company.setAirports(objects);
         System.out.println("airport = " + airport);
         AirportMapper airportMapper = Mappers.getMapper(AirportMapper.class);
-        AirportDto dto = airportMapper.toDto(airport);
+        AirportDto dto = airportMapper.toDto(airport,new CycleAvoidingMappingContext());
         System.out.println("dto = " + dto);
     }
 }

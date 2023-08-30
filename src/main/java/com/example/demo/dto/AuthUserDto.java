@@ -21,9 +21,9 @@ public class AuthUserDto {
     @NotBlank
     public String email;
     @Builder.Default
-    public CompanyDto company=null;
+    public Company company=null;
     @Builder.Default
-    public FlightDto flight=null;
+    public Flight flight=null;
     @NotBlank
     @Size(min = 8)
     public String password;
