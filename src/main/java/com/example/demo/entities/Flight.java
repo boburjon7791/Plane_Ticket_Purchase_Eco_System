@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -22,8 +23,7 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @NotNull
-    @Builder.Default
-    private LocalDateTime localDateTime=LocalDateTime.now();
+    private LocalDateTime localDateTime;
 
     @NotNull
     @ToString.Exclude

@@ -12,10 +12,7 @@ import java.util.List;
 public interface AirportMapper {
     AirportMapper AIRPORT_MAPPER = Mappers.getMapper(AirportMapper.class);
     Airport toEntity(AirportDto airportDto);
-
-    // TODO: 29/08/2023 set lar
     AirportDto toDto(Airport airport);
-    // TODO: 29/08/2023 set lar
 
     default Page<AirportDto> toDtoPage(Page<Airport> airports){
         if (airports==null || airports.isEmpty()) {

@@ -19,5 +19,6 @@ public class CityDto {
     public UUID id;
     @NotBlank
     public String name;
+    @Builder.Default
     public Set<AirportDto> airports = new HashSet<>();
 }

@@ -2,12 +2,29 @@ package com.example.demo.controllers;
 
 import com.example.demo.services.AdminService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api.admin")
 public class AdminController {
     public final AdminService adminService;
+    @PutMapping("/set-admin/{email}")
+    public void setAdmin(@PathVariable String email){
+        adminService.setRoleAdmin(email);
+    }
+    @PutMapping("/remove-admin/{email}")
+    public void removeAdmin(@PathVariable String email){
+        adminService.removeRoleAdmin(email);
+    }
+    @PutMapping("/set-agent/{email}")
+    public void setAgent(@PathVariable String email){
+        adminService.setRoleAgent(email);
+    }
+    @PutMapping("/remove-agent/{email}")
+    public void removeAgent(@PathVariable String email){
+        adminService.removeRoleAgent(email);
+    }
 }

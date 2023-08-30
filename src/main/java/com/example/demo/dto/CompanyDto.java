@@ -18,5 +18,6 @@ public class CompanyDto {
     public UUID id;
     @NotBlank
     public String name;
+    @Builder.Default
     public Set<AuthUserDto> agent = new HashSet<>();
 }

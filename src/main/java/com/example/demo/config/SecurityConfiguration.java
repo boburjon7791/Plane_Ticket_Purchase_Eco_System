@@ -31,7 +31,6 @@ import java.util.Date;
         jsr250Enabled = true,
         securedEnabled = true
 )
-// TODO: 29/08/2023 jsrf
 public class SecurityConfiguration {
     public final ObjectMapper mapper;
     public final CustomUserDetailsService service;

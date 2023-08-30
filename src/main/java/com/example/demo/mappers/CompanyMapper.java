@@ -14,7 +14,6 @@ import java.util.List;
 public interface CompanyMapper {
     CompanyMapper COMPANY_MAPPER = Mappers.getMapper(CompanyMapper.class);
     Company toEntity(CompanyDto companyDto);
-    // TODO: 29/08/2023  set lar
     CompanyDto toDto(Company company);
 
     default Page<CompanyDto> toDtoPage(Page<Company> companies){
