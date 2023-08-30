@@ -13,14 +13,17 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     public final AuthUserRepository authUserRepository;
@@ -54,9 +57,10 @@ public class AuthServiceImpl implements AuthService {
             javaMailSenderService.send(activateCodes,specialMessage);
             JwtTokenUtil.addCookie(req,res,"email",saved.getEmail());
             authUserMapper.toDto(saved);
+            log.info("{} saved",authUser);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             throw new RuntimeException();
         }
     }
@@ -76,6 +80,7 @@ public class AuthServiceImpl implements AuthService {
                 authUserRepository.save(authUser);
                 res.setStatus(200);
 //                activateCodesRepository.deleteByCode(code);
+                log.info("{} acivated",authUser);
                 JwtTokenUtil.removeCookie(req,res,"email",authUser.getEmail());
             }else {
                 res.setStatus(400);
@@ -83,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
         } catch (Exception e){
             e.printStackTrace();
             res.setStatus(500);
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
     private static void check(@Valid ActivateCodes activateCodes){}
@@ -100,9 +105,10 @@ public class AuthServiceImpl implements AuthService {
             activateCodesRepository.save(activateCodes);
             JwtTokenUtil.addCookie(req,res,"email",authUser.getEmail());
             javaMailSenderService.send(activateCodes,specialMessage);
+            log.info("generated activation code for {}",authUser);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
 

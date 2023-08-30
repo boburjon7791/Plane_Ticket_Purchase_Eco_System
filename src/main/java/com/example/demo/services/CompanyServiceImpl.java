@@ -5,13 +5,17 @@ import com.example.demo.entities.Company;
 import com.example.demo.mappers.CompanyMapper;
 import com.example.demo.repositories.CompanyRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
     public final CompanyRepository companyRepository;
@@ -21,10 +25,12 @@ public class CompanyServiceImpl implements CompanyService {
         try {
             Company company = companyMapper.toEntity(companyDto);
             Company save = companyRepository.save(company);
-            return companyMapper.toDto(save);
+            CompanyDto dto = companyMapper.toDto(save);
+            log.info("{} created",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -34,10 +40,12 @@ public class CompanyServiceImpl implements CompanyService {
         try {
             Company company = companyMapper.toEntity(companyDto);
             Company save = companyRepository.save(company);
-            return companyMapper.toDto(save);
+            CompanyDto dto = companyMapper.toDto(save);
+            log.info("{} updated",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -46,10 +54,12 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto companyGet(String name) {
         try {
             Company company = companyRepository.findByName(name);
-            return companyMapper.toDto(company);
+            CompanyDto dto = companyMapper.toDto(company);
+            log.info("{} gave",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -58,9 +68,10 @@ public class CompanyServiceImpl implements CompanyService {
     public void companyDelete(String name) {
         try {
             companyRepository.deleteByName(name);
+            log.info("{} company deleted",name);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -69,10 +80,12 @@ public class CompanyServiceImpl implements CompanyService {
         try {
             Pageable pageable = PageRequest.of(page,size);
             Page<Company> all = companyRepository.findAll(pageable);
-            return companyMapper.toDtoPage(all);
+            Page<CompanyDto> dtoPage = companyMapper.toDtoPage(all);
+            log.info("{} gave",dtoPage);
+            return dtoPage;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }

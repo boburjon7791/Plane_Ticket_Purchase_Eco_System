@@ -6,9 +6,13 @@ import com.example.demo.entities.AuthUser;
 import com.example.demo.mappers.AuthUserMapper;
 import com.example.demo.repositories.AuthUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     public final AuthUserRepository authUserRepository;
@@ -18,10 +22,12 @@ public class UserServiceImpl implements UserService {
         try {
             AuthUser authUser = authUserMapper.toEntity(authUserDto);
             AuthUser saved = authUserRepository.save(authUser);
-            return authUserMapper.toDto(saved);
+            AuthUserDto dto = authUserMapper.toDto(saved);
+            log.info("{} updated",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }

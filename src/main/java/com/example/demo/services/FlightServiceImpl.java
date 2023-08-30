@@ -6,16 +6,19 @@ import com.example.demo.entities.Flight;
 import com.example.demo.mappers.FlightMapper;
 import com.example.demo.repositories.FlightRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FlightServiceImpl implements FlightService {
     public final FlightRepository flightRepository;
@@ -27,10 +30,12 @@ public class FlightServiceImpl implements FlightService {
         try {
             Flight flight = flightMapper.toEntity(flightDto);
             Flight save = flightRepository.save(flight);
-            return flightMapper.toDto(save);
+            FlightDto dto = flightMapper.toDto(save);
+            log.info("{} created",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023  log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }

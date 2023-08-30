@@ -5,11 +5,14 @@ import com.example.demo.entities.Auditable;
 import com.example.demo.entities.AuthUser;
 import com.example.demo.repositories.AuthUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
     public final AuthUserRepository authUserRepository;
@@ -19,9 +22,10 @@ public class AdminServiceImpl implements AdminService {
             AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
             authUser.setRole(Auditable.Role.ADMIN);
             authUserRepository.save(authUser);
+            log.info("{} admin",authUser);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -31,9 +35,10 @@ public class AdminServiceImpl implements AdminService {
             AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
             authUser.setRole(Auditable.Role.CUSTOMER);
             authUserRepository.save(authUser);
+            log.info("{} removed from admins",authUser);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023  log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -43,9 +48,10 @@ public class AdminServiceImpl implements AdminService {
              AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
              authUser.setRole(Auditable.Role.AGENT);
              authUserRepository.save(authUser);
+             log.info("{} agent",authUser);
          }catch (Exception e){
              e.printStackTrace();
-             // TODO: 30/08/2023 log
+             log.info("{}", Arrays.toString(e.getStackTrace()));
          }
     }
 
@@ -55,9 +61,10 @@ public class AdminServiceImpl implements AdminService {
              AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
              authUser.setRole(Auditable.Role.CUSTOMER);
              authUserRepository.save(authUser);
+             log.info("{} removed from agents",authUser);
          }catch (Exception e){
              e.printStackTrace();
-             // TODO: 30/08/2023  log
+             log.info("{}", Arrays.toString(e.getStackTrace()));
          }
     }
 }

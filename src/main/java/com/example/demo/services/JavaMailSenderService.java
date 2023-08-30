@@ -7,11 +7,15 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class JavaMailSenderService {
     public final JavaMailSender javaMailSender;
@@ -25,10 +29,10 @@ public class JavaMailSenderService {
             address.setAddress(activateCodes.getAuthUser().getEmail());
             mimeMessage.addRecipient(Message.RecipientType.TO,address);
             javaMailSender.send(mimeMessage);
-            // TODO: 30/08/2023 log
+            log.info("send message to {}",activateCodes.getAuthUser().getEmail());
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
     @Async
@@ -40,10 +44,10 @@ public class JavaMailSenderService {
             address.setAddress(email);
             mimeMessage.addRecipient(Message.RecipientType.TO,address);
             javaMailSender.send(mimeMessage);
-            // TODO: 30/08/2023 log
+            log.info("message send to {}",email);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
 }

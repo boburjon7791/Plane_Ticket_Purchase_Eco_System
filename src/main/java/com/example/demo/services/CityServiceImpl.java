@@ -5,14 +5,17 @@ import com.example.demo.entities.City;
 import com.example.demo.mappers.CityMapper;
 import com.example.demo.repositories.CityRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CityServiceImpl implements CityService {
     public final CityRepository cityRepository;
@@ -22,10 +25,12 @@ public class CityServiceImpl implements CityService {
         City city = cityMapper.toEntity(cityDto);
         try {
             City save = cityRepository.save(city);
-            return cityMapper.toDto(save);
+            CityDto dto = cityMapper.toDto(save);
+            log.info("{} created",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -35,10 +40,12 @@ public class CityServiceImpl implements CityService {
         City city = cityMapper.toEntity(cityDto);
         try {
             City save = cityRepository.save(city);
-            return cityMapper.toDto(save);
+            CityDto dto = cityMapper.toDto(save);
+            log.info("{} updated",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -47,10 +54,12 @@ public class CityServiceImpl implements CityService {
     public CityDto cityRead(String name) {
         try {
             City city = cityRepository.findByName(name);
-            return cityMapper.toDto(city);
+            CityDto dto = cityMapper.toDto(city);
+            log.info("{} gave",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -59,9 +68,10 @@ public class CityServiceImpl implements CityService {
     public void cityDelete(String name) {
         try {
             cityRepository.deleteByName(name);
+            log.info("{} city deleted",name);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -70,10 +80,12 @@ public class CityServiceImpl implements CityService {
         try {
             Pageable pageable = PageRequest.of(page,size);
             Page<City> all = cityRepository.findAll(pageable);
-            return cityMapper.toDtoPage(all);
+            Page<CityDto> dtoPage = cityMapper.toDtoPage(all);
+            log.info("{} gave",dtoPage);
+            return dtoPage;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
             return null;
         }
     }

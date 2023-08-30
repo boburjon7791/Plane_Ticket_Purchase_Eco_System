@@ -6,12 +6,16 @@ import com.example.demo.entities.Company;
 import com.example.demo.mappers.AirportMapper;
 import com.example.demo.repositories.AirportRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AirportServiceImpl implements AirportService {
     public final AirportRepository airportRepository;
@@ -21,10 +25,12 @@ public class AirportServiceImpl implements AirportService {
         try {
             Airport airport = airportMapper.toEntity(airportDto);
             Airport save = airportRepository.save(airport);
-            return airportMapper.toDto(save);
+            AirportDto dto = airportMapper.toDto(save);
+            log.info("{} saved",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023  log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -33,10 +39,12 @@ public class AirportServiceImpl implements AirportService {
     public AirportDto getAirport(String name) {
         try {
             Airport airport = airportRepository.findByName(name);
-            return airportMapper.toDto(airport);
+            AirportDto dto = airportMapper.toDto(airport);
+            log.info("{} gave",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023  log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -46,10 +54,12 @@ public class AirportServiceImpl implements AirportService {
         try {
             Airport airport = airportMapper.toEntity(airportDto);
             Airport save = airportRepository.save(airport);
-            return airportMapper.toDto(save);
+            AirportDto dto = airportMapper.toDto(save);
+            log.info("{} updated",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023  log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -58,9 +68,10 @@ public class AirportServiceImpl implements AirportService {
     public void deleteAirport(String name) {
         try {
             airportRepository.deleteByName(name);
+            log.info("{} airport deleted",name);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 30/08/2023 log
+            log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
 
