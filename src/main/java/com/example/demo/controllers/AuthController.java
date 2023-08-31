@@ -4,6 +4,7 @@ import com.example.demo.dto.AuthUserDto;
 import com.example.demo.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ import java.util.Objects;
 public class AuthController {
     public final AuthService authService;
     @PostMapping("/register")
-    public void register(@RequestBody AuthUserDto authUserDto,
+    public void register(@RequestBody @Valid AuthUserDto authUserDto,
                                                 HttpServletResponse res,
                                                 HttpServletRequest req){
         authService.register(authUserDto,res,req);

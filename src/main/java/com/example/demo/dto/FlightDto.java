@@ -2,7 +2,10 @@ package com.example.demo.dto;
 
 import com.example.demo.entities.Airport;
 import com.example.demo.entities.AuthUser;
+import com.example.demo.entities.City;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -30,4 +33,10 @@ public class FlightDto {
 
     @NotNull
     public Set<AuthUser> authUsers;
+
+    @NotNull
+    private City from;
+
+    @NotNull
+    private City to;
 }
