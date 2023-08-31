@@ -22,8 +22,14 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @NotNull
-    private LocalDateTime localDateTime;
+    @Column(name = "from_time",nullable = false)
+    private LocalDateTime fromTime;
+
+    @NotNull
+    @Column(name = "to_time",nullable = false)
+    private LocalDateTime toTime;
 
     @NotNull
     @ToString.Exclude
@@ -32,6 +38,7 @@ public class Flight {
     optional = false)
     private Airport airport;
 
+
     @NotNull
     @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL,
     fetch = FetchType.LAZY)
@@ -39,13 +46,13 @@ public class Flight {
     @Builder.Default
     private Set<AuthUser> authUsers=new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
     @NotNull
-    private Set<City> from = new HashSet<>();
+    private City from;
 
-    @NotNull
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
-    private Set<City> to = new HashSet<>();
+    @NotNull
+    private City to;
 }

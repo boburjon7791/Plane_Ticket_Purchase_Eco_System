@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 
 @Service
 public interface AgentService {
-    void sendReportEditFlight(Flight flight, LocalDateTime oldTime);
+    void sendReportEditFlight(Flight flight, LocalDateTime oldFromTime,LocalDateTime oldToTime);
 }

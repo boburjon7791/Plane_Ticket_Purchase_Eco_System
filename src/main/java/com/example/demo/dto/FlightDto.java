@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import com.example.demo.entities.Airport;
 import com.example.demo.entities.AuthUser;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -17,10 +18,16 @@ import java.util.UUID;
 @ToString
 public class FlightDto {
     public UUID id;
+
     @NotNull
-    public LocalDateTime localDateTime;
+    private LocalDateTime fromTime;
+
+    @NotNull
+    private LocalDateTime toTime;
+
     @NotNull
     public Airport airport;
+
     @NotNull
     public Set<AuthUser> authUsers;
 }

@@ -17,10 +17,16 @@ import java.util.UUID;
 @ToString
 public class FlightDto2 {
     public UUID id;
+
     @NotNull
-    public LocalDateTime localDateTime;
+    private LocalDateTime fromTime;
+
+    @NotNull
+    private LocalDateTime toTime;
+
     @NotNull
     public Airport airport;
+
     @NotNull
     public Set<AuthUser> authUsers;
 }

@@ -31,16 +31,25 @@ public class City {
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH},
     fetch = FetchType.LAZY)
+    @JoinTable(name = "city_airport",
+    joinColumns = @JoinColumn(name = "city_id"),
+    inverseJoinColumns = @JoinColumn(name = "airport_id"))
     @Builder.Default
     @NotNull
     private Set<Airport> airports=new HashSet<>();
 
     @NotNull
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @Builder.Default
+    @OneToMany(mappedBy = "from"
+            ,cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
     Set<Flight> flights = new HashSet<>();
 
     @NotNull
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @Builder.Default
+    @OneToMany(mappedBy = "to",
+            cascade = {CascadeType.DETACH, CascadeType.MERGE,
+                    CascadeType.PERSIST, CascadeType.REFRESH})
     Set<Flight> flights2 = new HashSet<>();
 
     public void addAirports(Airport airport) {

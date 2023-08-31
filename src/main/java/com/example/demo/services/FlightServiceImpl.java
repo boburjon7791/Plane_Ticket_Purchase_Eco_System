@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,14 +49,17 @@ public class FlightServiceImpl implements FlightService {
         try {
             UUID id = flightDto.getId();
             Optional<Flight> byId = flightRepository.findById(id);
-            LocalDateTime oldTime = byId.orElseThrow().getLocalDateTime();
+            LocalDateTime oldFromTime = byId.orElseThrow().getFromTime();
+            LocalDateTime oldToTime = byId.orElseThrow().getToTime();
             Flight flight = flightMapper.toEntity(flightDto);
             Flight save = flightRepository.save(flight);
-            agentService.sendReportEditFlight(save,oldTime);
-            return flightMapper.toDto(save);
+            agentService.sendReportEditFlight(save,oldFromTime,oldToTime);
+            FlightDto dto = flightMapper.toDto(save);
+            log.info("{} updated",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023  log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -65,10 +69,14 @@ public class FlightServiceImpl implements FlightService {
         try {
             Optional<Flight> byId = flightRepository.findById(id);
             Flight flight = byId.orElseThrow(RuntimeException::new);
-            return flightMapper.toDto(flight);
+            flight.setFromTime(flight.getFromTime().atZone(ZoneId.of(flight.getFrom().getName())).toLocalDateTime());
+            flight.setToTime(flight.getToTime().atZone(ZoneId.of(flight.getTo().getName())).toLocalDateTime());
+            FlightDto dto = flightMapper.toDto(flight);
+            log.info("{} gave",dto);
+            return dto;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -77,9 +85,10 @@ public class FlightServiceImpl implements FlightService {
     public void flightDelete(UUID id) {
         try {
             flightRepository.deleteById(id);
+            log.info("{} flight deleted",id);
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -88,10 +97,16 @@ public class FlightServiceImpl implements FlightService {
         try {
             Pageable pageable = PageRequest.of(page, limit);
             Page<Flight> flights = flightRepository.findAll(pageable);
-            return flightMapper.toDtoPage(flights);
+            flights.forEach(flight -> {
+                flight.setFromTime(flight.getFromTime().atZone(ZoneId.of(flight.getFrom().getName())).toLocalDateTime());
+                flight.setToTime(flight.getToTime().atZone(ZoneId.of(flight.getTo().getName())).toLocalDateTime());
+            });
+            Page<FlightDto> dtoPage = flightMapper.toDtoPage(flights);
+            log.info("{} gave",dtoPage);
+            return dtoPage;
         }catch (Exception e){
             e.printStackTrace();
-            // TODO: 29/08/2023 log
+            log.info("{}",Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -106,6 +121,7 @@ public class FlightServiceImpl implements FlightService {
             flightDto.setAuthUsers(flightDto.getAuthUsers());
             Flight flight = flightMapper.toEntity(flightDto);
             flightRepository.save(flight);
+            log.info("{} user reserved {}",authUser,flight);
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}",Arrays.toString(e.getStackTrace()));

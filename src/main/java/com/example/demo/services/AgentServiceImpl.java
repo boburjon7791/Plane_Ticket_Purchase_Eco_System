@@ -16,12 +16,12 @@ import java.util.Set;
 public class AgentServiceImpl implements AgentService {
     public final JavaMailSenderService javaMailSenderService;
     @Override
-    public void sendReportEditFlight(Flight flight, LocalDateTime oldTime) {
+    public void sendReportEditFlight(Flight flight, LocalDateTime oldFromTime,LocalDateTime oldToTime) {
         String message= """
                 Hurmatli mijoz %s dagi parvoz
                 %s ga ko'chirilganini ma'lum qilmoqchimiz.
                 Keltirilgan noqulayliklar uchun uzr so'raymiz.
-                """.formatted(oldTime.toString(),flight.getLocalDateTime().toString());
+                """.formatted(oldFromTime.toString(),flight.getFromTime().toString());
         Set<AuthUser> authUsers = flight.getAuthUsers();
         try {
             Runnable runnable = () -> authUsers.forEach(authUser -> javaMailSenderService.send(authUser.getEmail(),message));

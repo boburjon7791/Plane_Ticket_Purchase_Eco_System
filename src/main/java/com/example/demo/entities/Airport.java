@@ -44,7 +44,7 @@ public class Airport {
 
 
     @Builder.Default
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+    @ManyToMany(mappedBy = "airports",cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @ToString.Exclude
