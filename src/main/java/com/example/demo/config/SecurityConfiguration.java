@@ -39,7 +39,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(registry -> registry.anyRequest().permitAll())
+                .authorizeHttpRequests(registry -> registry.requestMatchers("/swagger-ui.html",
+                        "/swagger/**","/swagger-ui/**","/v3/**").permitAll())
+                .authorizeHttpRequests(registry -> registry.anyRequest().authenticated())
                 .exceptionHandling(errorConfig -> {
                     errorConfig.authenticationEntryPoint((request, response, authException) -> {
                         ErrorDto errorDto = new ErrorDto(request.getRequestURI(), 401,
