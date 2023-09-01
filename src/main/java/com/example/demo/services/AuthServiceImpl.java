@@ -73,8 +73,7 @@ public class AuthServiceImpl implements AuthService {
             JwtTokenUtil.addCookie(req,res,"email",saved.getEmail());
             authUserMapper.toDto(saved);
             log.info("{} saved",authUser);
-        }catch (MailAuthenticationException ignored){}
-        catch (Exception e){
+        }catch (Exception e){
             e.printStackTrace();
             log.warn("{}", Arrays.toString(e.getStackTrace()));
 //            log.warn("{}", e.getCause().toString());
