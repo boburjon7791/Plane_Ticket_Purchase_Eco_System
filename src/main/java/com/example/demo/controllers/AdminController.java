@@ -40,8 +40,8 @@ public class AdminController {
 
     @Transactional
     @PutMapping("/set-agent/{email}")
-    public void setAgent(@PathVariable String email){
-        adminService.setRoleAgent(email);
+    public void setAgent(@PathVariable String email, @RequestParam String companyId){
+        adminService.setRoleAgent(email,companyId);
     }
 
     @Transactional

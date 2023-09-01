@@ -3,14 +3,16 @@ package com.example.demo.services;
 
 import com.example.demo.entities.Auditable;
 import com.example.demo.entities.AuthUser;
+import com.example.demo.entities.Company;
 import com.example.demo.repositories.AuthUserRepository;
+import com.example.demo.repositories.CompanyRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,10 +23,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void setRoleAdmin(String email) {
         try {
-            AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
-            authUser.setRole(Auditable.Role.ADMIN);
-            authUserRepository.save(authUser);
-            log.info("{} admin",authUser);
+            authUserRepository.setAdminRole(email);
+            log.info("{} admin",email);
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}", Arrays.toString(e.getStackTrace()));
@@ -34,10 +34,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void removeRoleAdmin(String email) {
         try {
-            AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
-            authUser.setRole(Auditable.Role.CUSTOMER);
-            authUserRepository.save(authUser);
-            log.info("{} removed from admins",authUser);
+            authUserRepository.removeAdminRole(email);
+            log.info("{} removed from admins",email);
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}", Arrays.toString(e.getStackTrace()));
@@ -45,12 +43,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void setRoleAgent(String email) {
+    public void setRoleAgent(String email, String companyId) {
          try {
-             AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
-             authUser.setRole(Auditable.Role.AGENT);
-             authUserRepository.save(authUser);
-             log.info("{} agent",authUser);
+             authUserRepository.setAgentRole(email, companyId);
+             log.info("{} agent",email);
          }catch (Exception e){
              e.printStackTrace();
              log.info("{}", Arrays.toString(e.getStackTrace()));
@@ -60,10 +56,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void removeRoleAgent(String email) {
          try {
-             AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
-             authUser.setRole(Auditable.Role.CUSTOMER);
-             authUserRepository.save(authUser);
-             log.info("{} removed from agents",authUser);
+             authUserRepository.removeAgentRole(email);
+             log.info("{} removed from agents",email);
          }catch (Exception e){
              e.printStackTrace();
              log.info("{}", Arrays.toString(e.getStackTrace()));
