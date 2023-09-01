@@ -137,14 +137,13 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void flightReserve(FlightDto flightDto, UUID userID) {
+    public void flightReserve(UUID id, UUID userID) {
         try {
             Optional<AuthUser> byId = authUserRepository.findById(userID);
             AuthUser authUser = byId.orElseThrow();
-            flightDto.setId(userID);
-            flightDto.getAuthUsers().add(authUser);
-            flightDto.setAuthUsers(flightDto.getAuthUsers());
-            Flight flight = flightMapper.toEntity(flightDto);
+            Optional<Flight> byId1 = flightRepository.findById(id);
+            Flight flight = byId1.orElseThrow();
+            flight.getAuthUsers().add(authUser);
             flightRepository.save(flight);
             log.info("{} user reserved {}",authUser,flight);
         }catch (Exception e){
@@ -154,14 +153,13 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void flightCancel(FlightDto flightDto, UUID userID) {
+    public void flightCancel(UUID id, UUID userID) {
         try {
         Optional<AuthUser> byId = authUserRepository.findById(userID);
         AuthUser authUser = byId.orElseThrow();
-        flightDto.setId(userID);
-        flightDto.getAuthUsers().remove(authUser);
-        flightDto.setAuthUsers(flightDto.getAuthUsers());
-        Flight flight = flightMapper.toEntity(flightDto);
+        Optional<Flight> byId1 = flightRepository.findById(id);
+        Flight flight = byId1.orElseThrow();
+        flight.getAuthUsers().remove(authUser);
         flightRepository.save(flight);
         log.info("{} user canceled {}",authUser,flight);
         }catch (Exception e){

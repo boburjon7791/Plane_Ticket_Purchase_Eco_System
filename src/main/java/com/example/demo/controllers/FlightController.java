@@ -49,19 +49,13 @@ public class FlightController {
     }
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/reserve/{id}")
-    public void reserveFlight(@PathVariable UUID id,
-                                                  @Valid @RequestBody FlightDto flightDto,
-                                                  @RequestParam UUID userID){
-        flightDto.setId(id);
-        flightService.flightReserve(flightDto,userID);
+    public void reserveFlight(@PathVariable UUID id, @RequestParam UUID userID){
+        flightService.flightReserve(id,userID);
     }
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/cancel/{id}")
-    public void cancelFlight(@PathVariable UUID id,
-                                                  @Valid @RequestBody FlightDto flightDto,
-                                                  @RequestParam UUID userID){
-        flightDto.setId(id);
-        flightService.flightCancel(flightDto,userID);
+    public void cancelFlight(@PathVariable UUID id, @RequestParam UUID userID){
+        flightService.flightCancel(id,userID);
     }
     @DeleteMapping("/delete/{id}")
     public void deleteFlight(@PathVariable UUID id){
