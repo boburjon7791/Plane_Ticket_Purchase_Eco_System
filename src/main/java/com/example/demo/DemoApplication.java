@@ -84,8 +84,14 @@ public class DemoApplication {
 				.group("customer")
 				.pathsToMatch("/api.flight/get/**",
 						"/api.city/get/**",
+						"/api.city/get-id/**",
+						"/api.company/get/**",
+						"/api.company/get-id/**",
 						"/api.airport/get/**",
+						"/api.airport/get-id/**",
 						"/api.auth/**",
+						"/api.flight/get/**",
+						"/api.flight/get-id/**",
 						"/api.flight/reserve/**",
 						"/api.flight/cancel/**")
 				.build();
