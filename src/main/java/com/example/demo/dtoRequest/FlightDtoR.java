@@ -2,6 +2,7 @@ package com.example.demo.dtoRequest;
 
 import com.example.demo.entities.AuthUser;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class FlightDtoR {
     private LocalDateTime fromTime;
 
 
-    private LocalDateTime toTime;
+    public LocalDateTime toTime;
 
 
     @NotNull
@@ -30,8 +31,12 @@ public class FlightDtoR {
     public Set<AuthUser> authUsers;
 
     @NotNull
-    private UUID fromId;
+    public UUID fromId;
 
     @NotNull
-    private UUID toId;
+    public UUID toId;
+
+    @NotNull
+    @Positive
+    public Double price;
 }

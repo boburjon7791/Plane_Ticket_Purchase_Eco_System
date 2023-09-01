@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -57,4 +58,8 @@ public class Flight {
             CascadeType.PERSIST, CascadeType.REFRESH})
     @NotNull
     private City to;
+
+    @NotNull
+    @Positive
+    private Double price;
 }

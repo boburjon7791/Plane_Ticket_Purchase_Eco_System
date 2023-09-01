@@ -75,6 +75,12 @@ public class DemoApplication {
 		return GroupedOpenApi.builder()
 				.group("agent")
 				.pathsToMatch("/api.flight/**",
+						"/api.city/get/**",
+						"/api.city/get-id/**",
+						"/api.company/get/**",
+						"/api.company/get-id/**",
+						"/api.airport/get/**",
+						"/api.airport/get-id/**",
 						"/api.auth/**")
 				.build();
 	}
@@ -82,7 +88,7 @@ public class DemoApplication {
 	public GroupedOpenApi customer() {
 		return GroupedOpenApi.builder()
 				.group("customer")
-				.pathsToMatch("/api.flight/get/**",
+				.pathsToMatch(
 						"/api.city/get/**",
 						"/api.city/get-id/**",
 						"/api.company/get/**",

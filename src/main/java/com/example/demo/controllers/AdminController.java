@@ -6,6 +6,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
@@ -13,6 +15,17 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     public final AdminService adminService;
 
+
+    @Transactional
+    @PutMapping("/block-user/{email}")
+    public void block(@PathVariable String email){
+        adminService.block(email);
+    }
+    @Transactional
+    @PutMapping("/unblock-user/{email}")
+    public void unblock(@PathVariable String email){
+        adminService.unblock(email);
+    }
     @Transactional
     @PutMapping("/set-admin/{email}")
     public void setAdmin(@PathVariable String email){
