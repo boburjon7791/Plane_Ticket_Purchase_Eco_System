@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.FlightDto;
+import com.example.demo.dtoRequest.FlightDtoR;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.services.FlightService;
 import jakarta.validation.Valid;
@@ -23,31 +24,31 @@ public class FlightController {
     private final AuthUserRepository authUserRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<FlightDto> createFlight(@RequestBody @Valid FlightDto flightDto,@RequestParam Map<String,String> param){
-        FlightDto create = flightService.flightCreate(flightDto,param);
-        return new ResponseEntity<>(create, HttpStatus.CREATED);
+    public ResponseEntity<UUID> createFlight(@RequestBody @Valid FlightDtoR flightDtoR, @RequestParam Map<String,String> param){
+        FlightDtoR create = flightService.flightCreate(flightDtoR,param);
+        return new ResponseEntity<>(create.getId(), HttpStatus.CREATED);
     }
-    @GetMapping("/get/{id}")
+    @GetMapping("/get-id/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<FlightDto> getFlight(@PathVariable UUID id){
-        FlightDto flightDto = flightService.flightsGet(id);
+    public ResponseEntity<FlightDtoR> getFlightId(@PathVariable String id){
+        FlightDtoR flightDto = flightService.flightsGet(UUID.fromString(id));
         return new ResponseEntity<>(flightDto,HttpStatus.OK);
     }
     @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
-    public Page<FlightDto> getAll(@RequestParam Map<String,String> param){
+    public Page<FlightDtoR> getAll(@RequestParam Map<String,String> param){
         int size= Integer.parseInt(param.getOrDefault("size","5"));
         int page= Integer.parseInt(param.getOrDefault("page","0"));
         return flightService.getAllFlights(size, page);
     }
     @PutMapping("/update/{id}")
     @Transactional
-    public ResponseEntity<FlightDto> updateFlight(@PathVariable UUID id,
-                                                  @Valid @RequestBody FlightDto flightDto,
+    public ResponseEntity<UUID> updateFlight(@PathVariable UUID id,
+                                                  @Valid @RequestBody FlightDtoR flightDtoR,
                                                   @RequestParam Map<String, String> param){
-        flightDto.setId(id);
-        FlightDto edit = flightService.flightEdit(flightDto,param);
-        return new ResponseEntity<>(edit,HttpStatus.OK);
+        flightDtoR.setId(id);
+        FlightDtoR edit = flightService.flightEdit(flightDtoR,param);
+        return new ResponseEntity<>(edit.getId(),HttpStatus.OK);
     }
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/reserve/{id}")

@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.AuthUserDto;
+import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,10 +21,10 @@ import java.util.Objects;
 public class AuthController {
     public final AuthService authService;
     @PostMapping("/register")
-    public void register(@RequestBody @Valid AuthUserDto authUserDto,
+    public void register(@RequestBody @Valid AuthUserDtoR authUserDtor,
                                                 HttpServletResponse res,
                                                 HttpServletRequest req){
-        authService.register(authUserDto,res,req);
+        authService.register(authUserDtor,res,req);
     }
     @PostMapping("/login")
     public String login(@RequestParam Map<String,String> param){
@@ -33,9 +34,8 @@ public class AuthController {
     }
 
     @PostMapping("/activate/{code}")
-    public void activate(@RequestParam Map<String,String> param,
+    public void activate(@PathVariable Integer code,@RequestParam Map<String,String> param,
                          HttpServletRequest req, HttpServletResponse res){
-        Integer code = Integer.valueOf(param.get("code"));
         String email = param.get("email");
         authService.activate(code,email,req,res);
     }

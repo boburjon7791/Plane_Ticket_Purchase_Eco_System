@@ -1,45 +1,47 @@
 package com.example.demo.mappers;
 
 import com.example.demo.dto.AuthUserDto;
+import com.example.demo.dtoRequest.AuthUserDtoR;
+import com.example.demo.entities.Auditable;
 import com.example.demo.entities.AuthUser;
-import org.mapstruct.BeforeMapping;
-import org.mapstruct.Context;
+import com.example.demo.entities.Company;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Objects;
+
 @Mapper(componentModel = "spring")
 @Component
 public interface AuthUserMapper {
 //   AuthUserMapper AUTH_USER_MAPPER = Mappers.getMapper(AuthUserMapper.class);
-   AuthUser toEntity(AuthUserDto authUserDto);
-   AuthUserDto toDto(AuthUser authUser);
-   AuthUser toEntity(AuthUserDto authUserDto, CycleAvoidingMappingContext context);
-   AuthUserDto toDto(AuthUser authUser, CycleAvoidingMappingContext context);
-
-   @BeforeMapping
-   default void handleAuthUserDto(AuthUser authUser, @MappingTarget AuthUserDto authUserDto, @Context CycleAvoidingMappingContext context) {
-
-      if (authUser == null) {
-         return;
-      }
-      context.storeMappedInstance(authUser, authUserDto);
+   default AuthUser toEntity(AuthUserDtoR authUserDtoR, Company company){
+      return AuthUser.builder()
+              .id(authUserDtoR.getId())
+              .password(authUserDtoR.password)
+              .role(Auditable.Role.valueOf(authUserDtoR.getRole()))
+              .lastName(authUserDtoR.lastName)
+              .firstName(authUserDtoR.firstName)
+              .blocked(authUserDtoR.blocked)
+              .email(authUserDtoR.email)
+              .activateCodes(authUserDtoR.getActivateCodes())
+              .company(company)
+              .build();
+   }
+   default AuthUserDtoR toDto(AuthUser authUser){
+      return AuthUserDtoR.builder()
+              .id(authUser.getId())
+              .companyId(Objects.requireNonNullElse(authUser.getCompany().getId(), null))
+              .blocked(authUser.getBlocked())
+              .email(authUser.getEmail())
+              .firstName(authUser.getFirstName())
+              .lastName(authUser.getLastName())
+              .role(authUser.getRole().name())
+              .password(authUser.getPassword())
+              .build();
    }
 
-   // Context parametrini delegat qilamiz
-   @BeforeMapping
-   default void handleAuthUser(AuthUserDto authUserDto, @MappingTarget AuthUser authUser, @Context CycleAvoidingMappingContext context) {
-      if (authUserDto == null) {
-         return;
-      }
-      context.storeMappedInstance(authUserDto, authUser);
-   }
-
-   default Page<AuthUserDto> toDtoPage(Page<AuthUser> authUsers){
+   default Page<AuthUserDtoR> toDtoPage(Page<AuthUser> authUsers){
       if (authUsers==null || authUsers.isEmpty()) {
          return null;
       }

@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.CompanyDto;
+import com.example.demo.dtoRequest.CompanyDtoR;
 import com.example.demo.services.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,31 +22,40 @@ import java.util.Map;
 public class CompanyController {
     public final CompanyService companyService;
     @PostMapping("/create")
-    public ResponseEntity<CompanyDto> createCompany(@RequestBody @Valid CompanyDto companyDto){
-        CompanyDto created = companyService.companyCreate(companyDto);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<UUID> createCompany(@RequestBody @Valid CompanyDtoR companyDtoR){
+        CompanyDtoR created = companyService.companyCreate(companyDtoR);
+        return new ResponseEntity<>(created.getId(), HttpStatus.CREATED);
     }
     @GetMapping("/get/all")
     @PreAuthorize("isAuthenticated()")
-    public Page<CompanyDto> getAll(@RequestParam Map<String,String> param){
+    public Page<CompanyDtoR> getAll(@RequestParam Map<String,String> param){
         int page= Integer.parseInt(param.getOrDefault("page","1"));
         int size= Integer.parseInt(param.getOrDefault("size","5"));
         return companyService.getAllCompanies(page, size);
     }
     @GetMapping("/get/{name}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CompanyDto> getCompany(@PathVariable String name){
-        CompanyDto companyDto = companyService.companyGet(name);
+    public ResponseEntity<CompanyDtoR> getCompany(@PathVariable String name){
+        CompanyDtoR companyDto = companyService.companyGet(name);
         return new ResponseEntity<>(companyDto, HttpStatus.OK);
     }
+
+    @GetMapping("/get-id/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CompanyDtoR> getCompanyId(@PathVariable String id){
+        CompanyDtoR companyDto = companyService.companyGet(UUID.fromString(id));
+        return new ResponseEntity<>(companyDto, HttpStatus.OK);
+    }
+
     @PutMapping("/update/{name}")
     @Transactional
-    public ResponseEntity<CompanyDto> updateCompany(@PathVariable String name,
-                                                    @RequestBody @Valid CompanyDto companyDto){
-        companyDto.setName(name);
-        CompanyDto edited = companyService.companyEdit(companyDto);
-        return new ResponseEntity<>(edited,HttpStatus.OK);
+    public ResponseEntity<UUID> updateCompany(@PathVariable String name,
+                                              @RequestBody @Valid CompanyDtoR companyDtoR){
+        companyDtoR.setName(name);
+        CompanyDtoR edited = companyService.companyEdit(companyDtoR);
+        return new ResponseEntity<>(edited.getId(),HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/{name}")
     @Transactional
     public void deleteCompany(@PathVariable String name){

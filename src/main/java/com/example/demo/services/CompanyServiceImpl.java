@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.CompanyDto;
+import com.example.demo.dtoRequest.CompanyDtoR;
 import com.example.demo.entities.Company;
 import com.example.demo.mappers.CompanyMapper;
 import com.example.demo.repositories.CompanyRepository;
@@ -27,12 +28,13 @@ public class CompanyServiceImpl implements CompanyService {
     public final CompanyRepository companyRepository;
     public final CompanyMapper companyMapper;
     @Override
-    public CompanyDto companyCreate(CompanyDto companyDto) {
+    public CompanyDtoR companyCreate(CompanyDtoR companyDtoR) {
         try {
-            Company company = companyMapper.toEntity(companyDto);
+            Company company = companyMapper.toEntity(companyDtoR);
             Company save = companyRepository.save(company);
-            CompanyDto dto = companyMapper.toDto(save);
+            CompanyDtoR dto = companyMapper.toDto(save);
             log.info("{} created",dto);
+//            setNull(dto);
             return dto;
         }catch (Exception e){
             e.printStackTrace();
@@ -42,12 +44,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyDto companyEdit(CompanyDto companyDto) {
+    public CompanyDtoR companyEdit(CompanyDtoR companyDtoR) {
         try {
-            Company company = companyMapper.toEntity(companyDto);
+            Company company = companyMapper.toEntity(companyDtoR);
             Company save = companyRepository.save(company);
-            CompanyDto dto = companyMapper.toDto(save);
+            CompanyDtoR dto = companyMapper.toDto(save);
             log.info("{} updated",dto);
+//            setNull(dto);
             return dto;
         }catch (Exception e){
             e.printStackTrace();
@@ -57,11 +60,12 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyDto companyGet(String name) {
+    public CompanyDtoR companyGet(String name) {
         try {
             Company company = companyRepository.findByName(name);
-            CompanyDto dto = companyMapper.toDto(company);
+            CompanyDtoR dto = companyMapper.toDto(company);
             log.info("{} gave",dto);
+//            setNull(dto);
             return dto;
         }catch (Exception e){
             e.printStackTrace();
@@ -82,7 +86,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Page<CompanyDto> getAllCompanies(int page,int size) {
+    public Page<CompanyDtoR> getAllCompanies(int page,int size) {
         try {
             Pageable pageable = PageRequest.of(page,size);
             Page<Company> all = companyRepository.findAll(pageable);
@@ -90,17 +94,47 @@ public class CompanyServiceImpl implements CompanyService {
             if (all.getContent().size()<all.getSize()) {
                 List<Company> all1 = companyRepository.findAll();
                 Page<Company> empty = new PageImpl<>(all1);
-                Page<CompanyDto> dtoPage = companyMapper.toDtoPage(empty);
+                Page<CompanyDtoR> dtoPage = companyMapper.toDtoPage(empty);
                 log.info("{} gave",empty);
+//                dtoPage.forEach(this::setNull);
                 return dtoPage;
             }
-            Page<CompanyDto> dtoPage = companyMapper.toDtoPage(all);
+            Page<CompanyDtoR> dtoPage = companyMapper.toDtoPage(all);
             log.info("{} gave",dtoPage);
+//            dtoPage.forEach(this::setNull);
             return dtoPage;
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
+    }
+
+    @Override
+    public CompanyDtoR companyGet(UUID id) {
+        try {
+            Optional<Company> byId = companyRepository.findById(id);
+            CompanyDtoR dto = companyMapper.toDto(byId.orElseThrow());
+            log.info("{} gave",dto);
+//            setNull(dto);
+            return dto;
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("{}",Arrays.toString(e.getStackTrace()));
+            return null;
+        }
+    }
+
+    private void setNull(CompanyDto dto) {
+        dto.getAgent().forEach(authUser -> {
+            authUser.setCompany(null);
+            authUser.setFlights(null);
+            authUser.setActivateCodes(null);
+        });
+        dto.getAirports().forEach(airport -> {
+            airport.setCompany(null);
+            airport.setCities(null);
+            airport.setFlights(null);
+        });
     }
 }

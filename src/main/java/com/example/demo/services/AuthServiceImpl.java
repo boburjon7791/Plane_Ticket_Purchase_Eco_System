@@ -1,31 +1,39 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.AuthUserDto;
+import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.entities.ActivateCodes;
 import com.example.demo.entities.AuthUser;
+import com.example.demo.entities.Company;
 import com.example.demo.mappers.AuthUserMapper;
 import com.example.demo.repositories.ActivateCodesRepository;
 import com.example.demo.repositories.AuthUserRepository;
+import com.example.demo.repositories.CompanyRepository;
 import com.example.demo.util.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+    private final CompanyRepository companyRepository;
     public final AuthUserRepository authUserRepository;
     private final ActivateCodesRepository activateCodesRepository;
     private final JavaMailSenderService javaMailSenderService;
@@ -38,13 +46,20 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    public void register(@NonNull AuthUserDto authUserDto,
+    public void register(@Valid @NonNull AuthUserDtoR authUserDtoR,
                          HttpServletResponse res,
                          HttpServletRequest req){
         try {
+            Optional<Company> byId= Optional.empty();
+            if (authUserDtoR.companyId!=null) {
+                UUID companyId = authUserDtoR.getCompanyId();
+                authUserDtoR.setBlocked(true);
+                byId = companyRepository.findById(companyId);
+            }
             AuthUser authUser =
-                    authUserMapper.toEntity(authUserDto);
+                    authUserMapper.toEntity(authUserDtoR,byId.orElse(null));
             authUser.setPassword(passwordEncoder.encode(authUser.getPassword()));
+            authUser.setBlocked(true);
             AuthUser saved = authUserRepository.save(authUser);
             String email = saved.getEmail();
             ActivateCodes activateCodes = ActivateCodes.builder()
@@ -58,10 +73,12 @@ public class AuthServiceImpl implements AuthService {
             JwtTokenUtil.addCookie(req,res,"email",saved.getEmail());
             authUserMapper.toDto(saved);
             log.info("{} saved",authUser);
-        }catch (Exception e){
+        }catch (MailAuthenticationException ignored){}
+        catch (Exception e){
             e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-            throw new RuntimeException();
+            log.warn("{}", Arrays.toString(e.getStackTrace()));
+//            log.warn("{}", e.getCause().toString());
+            log.warn("{}",e.getLocalizedMessage());
         }
     }
     @Override

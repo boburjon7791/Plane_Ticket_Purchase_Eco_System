@@ -3,11 +3,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.time.ZoneId;
+import java.time.zone.ZoneRules;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -38,6 +38,9 @@ public class City {
     @NotNull
     private Set<Airport> airports=new HashSet<>();
 
+//    @NotNull
+//    private String zone;
+
     @NotNull
     @Builder.Default
     @OneToMany(mappedBy = "from"
@@ -46,6 +49,9 @@ public class City {
     @ToString.Exclude
     Set<Flight> flights = new HashSet<>();
 
+    @NotBlank
+    private String gmt;
+
     @NotNull
     @Builder.Default
     @OneToMany(mappedBy = "to",
@@ -53,7 +59,6 @@ public class City {
                     CascadeType.PERSIST, CascadeType.REFRESH})
     @ToString.Exclude
     Set<Flight> flights2 = new HashSet<>();
-
     public void addAirports(Airport airport) {
         this.airports.add(airport);
     }

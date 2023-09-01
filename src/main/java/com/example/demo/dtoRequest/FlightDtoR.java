@@ -1,6 +1,5 @@
-package com.example.demo.dto;
+package com.example.demo.dtoRequest;
 
-import com.example.demo.entities.Airport;
 import com.example.demo.entities.AuthUser;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class FlightDto2 {
+public class FlightDtoR {
     public UUID id;
 
     @NotNull
@@ -24,9 +23,15 @@ public class FlightDto2 {
 
     private LocalDateTime toTime;
 
-    @NotNull
-    public Airport airport;
 
     @NotNull
+    public UUID airportId;
+
     public Set<AuthUser> authUsers;
+
+    @NotNull
+    private UUID fromId;
+
+    @NotNull
+    private UUID toId;
 }

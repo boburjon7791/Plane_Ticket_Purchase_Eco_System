@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.AuthUserDto;
+import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class UserController {
     public final UserService userService;
     @PutMapping("/edit/{email}")
     @Transactional
-    public ResponseEntity<AuthUserDto> editUser(@RequestBody @Valid AuthUserDto authUserDto){
-        AuthUserDto updated = userService.updateAuthUser(authUserDto);
+    public ResponseEntity<AuthUserDtoR> editUser(@RequestBody @Valid AuthUserDtoR authUserDtoR){
+        AuthUserDtoR updated = userService.updateAuthUser(authUserDtoR);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 }

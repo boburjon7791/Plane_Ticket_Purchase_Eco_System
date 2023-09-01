@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.controllers.CityController;
 import com.example.demo.entities.*;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CityRepository;
@@ -14,8 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @SpringBootApplication
@@ -32,15 +35,20 @@ public class DemoApplication {
    public CommandLineRunner runner(){
 	   return args -> {
 		   try {
+			   Set<String> zoneIds = ZoneId.getAvailableZoneIds();
 			   Collection<String> cityNames = BaseUtil.cities;
 			   Collection<City> cities = new HashSet<>();
 			   cityNames.forEach(s -> {
+				   Optional<String> first = zoneIds.stream().filter(s1 -> s1.toUpperCase().contains(s.toUpperCase()))
+						   .findFirst();
+				   String gmt = ZoneId.of(first.orElseThrow()).getRules().toString();
 				   City city = City.builder()
+						   .gmt(gmt)
 						   .name(s).build();
 				   cities.add(city);
+				   System.out.println(city);
+				   cityRepository.save(city);
 			   });
-
-			   cityRepository.saveAll(cities);
 
 			   AuthUser admin = AuthUser.builder()
 					   .email("admin123@mail.com")

@@ -38,7 +38,7 @@ public class Flight {
     private Airport airport;
 
 
-    @NotNull
+//    @NotNull
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
     @ToString.Exclude
