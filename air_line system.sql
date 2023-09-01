@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS system_of_airline.city
 (
     id uuid NOT NULL,
     name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    gmt character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT city_pkey PRIMARY KEY (id),
     CONSTRAINT uk_qsstlki7ni5ovaariyy9u8y79 UNIQUE (name)
 );
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS system_of_airline.flight
     airport_id uuid NOT NULL,
     from_id uuid NOT NULL,
     to_id uuid NOT NULL,
+    price double precision,
     CONSTRAINT flight_pkey PRIMARY KEY (id)
 );
 
