@@ -43,6 +43,7 @@ public class City {
     @OneToMany(mappedBy = "from"
             ,cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
+    @ToString.Exclude
     Set<Flight> flights = new HashSet<>();
 
     @NotNull
@@ -50,6 +51,7 @@ public class City {
     @OneToMany(mappedBy = "to",
             cascade = {CascadeType.DETACH, CascadeType.MERGE,
                     CascadeType.PERSIST, CascadeType.REFRESH})
+    @ToString.Exclude
     Set<Flight> flights2 = new HashSet<>();
 
     public void addAirports(Airport airport) {
