@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.FlightDto;
-import com.example.demo.entities.AuthUser;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.services.FlightService;
 import jakarta.validation.Valid;
@@ -11,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalTime;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
