@@ -166,14 +166,18 @@ public class FlightServiceImpl implements FlightService {
         try {
             Optional<Flight> byId = flightRepository.findById(id);
             Flight flight = byId.orElseThrow(RuntimeException::new);
-            Optional<String> fromOp = ZoneId.getAvailableZoneIds().stream()
-                    .filter(s -> s.toUpperCase().contains(flight.getFrom().getName().toUpperCase()))
+            String gmtFrom = flight.getFrom().getGmt();
+            String gmtTo = flight.getTo().getGmt();
+
+            Optional<String> firstFrom = ZoneId.getAvailableZoneIds().stream()
+                    .filter(s -> ZoneId.of(s).getRules().toString().equals(gmtFrom))
                     .findFirst();
-            Optional<String> toOp = ZoneId.getAvailableZoneIds().stream()
-                    .filter(s -> s.toUpperCase().contains(flight.getTo().getName().toUpperCase()))
+            Optional<String> firstTo = ZoneId.getAvailableZoneIds().stream()
+                    .filter(s -> ZoneId.of(s).getRules().toString().equals(gmtTo))
                     .findFirst();
-            flight.setFromTime(flight.getFromTime().atZone(ZoneId.of(fromOp.orElseThrow())).toLocalDateTime());
-            flight.setToTime(flight.getToTime().atZone(ZoneId.of(toOp.orElseThrow())).toLocalDateTime());
+
+            flight.setFromTime(flight.getFromTime().atZone(ZoneId.of(firstFrom.orElseThrow())).toLocalDateTime());
+            flight.setToTime(flight.getToTime().atZone(ZoneId.of(firstTo.orElseThrow())).toLocalDateTime());
             System.out.println(flight);
             FlightDtoR dto = flightMapper.toDto(flight);
             log.info("{} gave",dto);
@@ -201,9 +205,14 @@ public class FlightServiceImpl implements FlightService {
         try {
             Pageable pageable = PageRequest.of(page, limit);
             Page<Flight> flights = flightRepository.findAll(pageable);
+            Set<String> zoneIds = ZoneId.getAvailableZoneIds();
             flights.forEach(flight -> {
-                flight.setFromTime(flight.getFromTime().atZone(ZoneId.of(flight.getFrom().getName())).toLocalDateTime());
-                flight.setToTime(flight.getToTime().atZone(ZoneId.of(flight.getTo().getName())).toLocalDateTime());
+                Optional<String> firstFrom = zoneIds.stream().filter(s -> ZoneId.of(s).getRules().toString()
+                        .equals(flight.getFrom().getGmt())).findFirst();
+                Optional<String> firstTo = zoneIds.stream().filter(s -> ZoneId.of(s).getRules().toString()
+                        .equals(flight.getTo().getGmt())).findFirst();
+                flight.setFromTime(flight.getFromTime().atZone(ZoneId.of(firstFrom.orElseThrow())).toLocalDateTime());
+                flight.setToTime(flight.getToTime().atZone(ZoneId.of(firstTo.orElseThrow())).toLocalDateTime());
             });
             if (flights.getContent().size()<flights.getSize()) {
                 List<Flight> all1 = flightRepository.findAll();
