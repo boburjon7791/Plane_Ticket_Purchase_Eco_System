@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public class CityController {
     }
 
     @PutMapping("/update/{name}")
+    @Transactional
     public ResponseEntity<CityDto> updateCity(@PathVariable String name,@Valid @RequestBody CityDto cityDto){
         cityDto.setName(name);
         CityDto cityEdit = cityService.cityEdit(cityDto);
@@ -46,6 +48,7 @@ public class CityController {
     }
 
     @DeleteMapping("/delete/{name}")
+    @Transactional
     public void deleteCity(@PathVariable String name){
         cityService.cityDelete(name);
     }

@@ -4,14 +4,20 @@ import com.example.demo.dto.CompanyDto;
 import com.example.demo.entities.Company;
 import com.example.demo.mappers.CompanyMapper;
 import com.example.demo.repositories.CompanyRepository;
+import io.swagger.v3.oas.models.links.Link;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 
 @Service
@@ -80,6 +86,14 @@ public class CompanyServiceImpl implements CompanyService {
         try {
             Pageable pageable = PageRequest.of(page,size);
             Page<Company> all = companyRepository.findAll(pageable);
+            all.getContent().forEach(System.out::println);
+            if (all.getContent().size()<all.getSize()) {
+                List<Company> all1 = companyRepository.findAll();
+                Page<Company> empty = new PageImpl<>(all1);
+                Page<CompanyDto> dtoPage = companyMapper.toDtoPage(empty);
+                log.info("{} gave",empty);
+                return dtoPage;
+            }
             Page<CompanyDto> dtoPage = companyMapper.toDtoPage(all);
             log.info("{} gave",dtoPage);
             return dtoPage;

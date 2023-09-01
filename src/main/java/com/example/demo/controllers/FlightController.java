@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class FlightController {
         return flightService.getAllFlights(size, page);
     }
     @PutMapping("/update/{id}")
+    @Transactional
     public ResponseEntity<FlightDto> updateFlight(@PathVariable UUID id,
                                                   @Valid @RequestBody FlightDto flightDto,
                                                   @RequestParam Map<String, String> param){
@@ -49,15 +51,18 @@ public class FlightController {
     }
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/reserve/{id}")
+    @Transactional
     public void reserveFlight(@PathVariable UUID id, @RequestParam UUID userID){
         flightService.flightReserve(id,userID);
     }
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/cancel/{id}")
+    @Transactional
     public void cancelFlight(@PathVariable UUID id, @RequestParam UUID userID){
         flightService.flightCancel(id,userID);
     }
     @DeleteMapping("/delete/{id}")
+    @Transactional
     public void deleteFlight(@PathVariable UUID id){
         flightService.flightDelete(id);
     }

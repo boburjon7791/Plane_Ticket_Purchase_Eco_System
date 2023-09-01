@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -37,6 +38,7 @@ public class AirportController {
         return airportService.getAll(size, page);
     }
     @PutMapping("/update/{name}")
+    @Transactional
     public ResponseEntity<AirportDto> updateAirport(@PathVariable String name,
                                                     @RequestBody @Valid AirportDto airportDto){
         airportDto.setName(name);
@@ -44,6 +46,7 @@ public class AirportController {
         return new ResponseEntity<>(airport,HttpStatus.OK);
     }
     @DeleteMapping("/delete/{name}")
+    @Transactional
     public void deleteAirport(@PathVariable String name){
         airportService.deleteAirport(name);
     }
