@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,9 +31,21 @@ public class FlightServiceImpl implements FlightService {
     private final AuthUserRepository authUserRepository;
 
     @Override
-    public FlightDto flightCreate(FlightDto flightDto) {
+    public FlightDto flightCreate(FlightDto flightDto, Map<String, String> param) {
         try {
+            int hour=-7;
+            int minute = -9;
+            try {
+                hour = Integer.parseInt(param.get("hour"));
+                minute = Integer.parseInt(param.get("minute"));
+            }catch (Exception e){
+                e.printStackTrace();
+                log.info("{}", Arrays.toString(e.getStackTrace()));
+            }
             Flight flight = flightMapper.toEntity(flightDto);
+            LocalDateTime toDateTime = flight.getFromTime().plusHours(hour).plusMinutes(minute).
+                    atZone(ZoneId.of(flightDto.getTo().getName())).toLocalDateTime();
+            flight.setToTime(toDateTime);
             Flight save = flightRepository.save(flight);
             FlightDto dto = flightMapper.toDto(save);
             log.info("{} created",dto);
@@ -45,13 +58,25 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightDto flightEdit(FlightDto flightDto) {
+    public FlightDto flightEdit(FlightDto flightDto, Map<String, String> param) {
         try {
+            int hour=-7;
+            int minute=-10;
+            try {
+                hour= Integer.parseInt(param.get("hour"));
+                minute= Integer.parseInt(param.get("minute"));
+            }catch (Exception e){
+                e.printStackTrace();
+                log.info("{}",Arrays.toString(e.getStackTrace()));
+            }
             UUID id = flightDto.getId();
             Optional<Flight> byId = flightRepository.findById(id);
             LocalDateTime oldFromTime = byId.orElseThrow().getFromTime();
             LocalDateTime oldToTime = byId.orElseThrow().getToTime();
             Flight flight = flightMapper.toEntity(flightDto);
+            LocalDateTime toDateTime = flight.getFromTime().plusHours(hour).plusMinutes(minute).
+                    atZone(ZoneId.of(flight.getFrom().getName())).toLocalDateTime();
+            flight.setToTime(toDateTime);
             Flight save = flightRepository.save(flight);
             agentService.sendReportEditFlight(save,oldFromTime,oldToTime);
             FlightDto dto = flightMapper.toDto(save);

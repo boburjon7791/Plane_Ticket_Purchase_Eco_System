@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,8 +26,8 @@ public class FlightController {
     private final AuthUserRepository authUserRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<FlightDto> createFlight(@RequestBody @Valid FlightDto flightDto){
-        FlightDto create = flightService.flightCreate(flightDto);
+    public ResponseEntity<FlightDto> createFlight(@RequestBody @Valid FlightDto flightDto,@RequestParam Map<String,String> param){
+        FlightDto create = flightService.flightCreate(flightDto,param);
         return new ResponseEntity<>(create, HttpStatus.CREATED);
     }
     @GetMapping("/get/{id}")
@@ -44,9 +45,10 @@ public class FlightController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<FlightDto> updateFlight(@PathVariable UUID id,
-                                                  @Valid @RequestBody FlightDto flightDto){
+                                                  @Valid @RequestBody FlightDto flightDto,
+                                                  @RequestParam Map<String, String> param){
         flightDto.setId(id);
-        FlightDto edit = flightService.flightEdit(flightDto);
+        FlightDto edit = flightService.flightEdit(flightDto,param);
         return new ResponseEntity<>(edit,HttpStatus.OK);
     }
     @PreAuthorize("isAuthenticated()")
