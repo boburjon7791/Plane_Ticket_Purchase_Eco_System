@@ -21,7 +21,7 @@ public class FlightDto2 {
     @NotNull
     private LocalDateTime fromTime;
 
-    @NotNull
+
     private LocalDateTime toTime;
 
     @NotNull
