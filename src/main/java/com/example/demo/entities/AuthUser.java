@@ -16,12 +16,11 @@ import java.util.Set;
 @ToString
 @Table(name = "auth_user")
 public class AuthUser extends Auditable{
-    @ManyToOne(fetch = FetchType.LAZY
-    ,cascade = CascadeType.ALL)
-    @JoinColumn(name = "flight_id")
+    @ManyToMany(mappedBy = "authUsers",cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @ToString.Exclude
     @Builder.Default
-    private Flight flight=null;
+    private Set<Flight> flights=new HashSet<>();
 
     @OneToMany(mappedBy = "authUser",cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)

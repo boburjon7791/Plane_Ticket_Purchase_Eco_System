@@ -30,9 +30,15 @@ CREATE TABLE IF NOT EXISTS system_of_airline.auth_user
     password character varying(255) COLLATE pg_catalog."default" NOT NULL,
     role character varying(255) COLLATE pg_catalog."default" NOT NULL,
     company_id uuid,
-    flight_id uuid,
     CONSTRAINT auth_user_pkey PRIMARY KEY (id),
     CONSTRAINT uk_klvc3dss72qnlrjp2bai055mw UNIQUE (email)
+);
+
+CREATE TABLE IF NOT EXISTS system_of_airline.auth_user_flight
+(
+    auth_user_id uuid NOT NULL,
+    flight_id uuid NOT NULL,
+    CONSTRAINT auth_user_flight_pkey PRIMARY KEY (auth_user_id, flight_id)
 );
 
 CREATE TABLE IF NOT EXISTS system_of_airline.city
@@ -90,8 +96,15 @@ ALTER TABLE IF EXISTS system_of_airline.auth_user
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS system_of_airline.auth_user
-    ADD CONSTRAINT fkjo47m1sd8ipncve4paqmsky5n FOREIGN KEY (flight_id)
+ALTER TABLE IF EXISTS system_of_airline.auth_user_flight
+    ADD CONSTRAINT fk6ab7f88pcx5vi95w9a6hoosso FOREIGN KEY (flight_id)
+    REFERENCES system_of_airline.auth_user (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS system_of_airline.auth_user_flight
+    ADD CONSTRAINT fklpda6ahpt64mesd07ub0mym58 FOREIGN KEY (auth_user_id)
     REFERENCES system_of_airline.flight (id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;

@@ -33,16 +33,18 @@ public class Flight {
 
     @NotNull
     @ToString.Exclude
-    @JoinColumn(name = "airport_id")
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,
     optional = false)
     private Airport airport;
 
 
     @NotNull
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL,
-    fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @ToString.Exclude
+    @JoinTable(name = "auth_user_flight",
+            joinColumns = @JoinColumn(name = "auth_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "flight_id"))
     @Builder.Default
     private Set<AuthUser> authUsers=new HashSet<>();
 
