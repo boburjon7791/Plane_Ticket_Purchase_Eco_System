@@ -37,6 +37,7 @@ public class AuthUserDtoR {
     @NotBlank
     public String lastName;
     @NotBlank
+    @Builder.Default
     public String role=Auditable.Role.CUSTOMER.name();
     @NotNull
     @Builder.Default
