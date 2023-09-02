@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -28,6 +29,7 @@ public class AgentServiceImpl implements AgentService {
             runnable.run();
             log.info("{} sended to {}",message,flight.getAuthUsers());
         }catch (Exception e){
+            e.printStackTrace();
             log.info("{}", Arrays.toString(e.getStackTrace()));
         }
     }
