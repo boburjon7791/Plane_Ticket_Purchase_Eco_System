@@ -5,6 +5,13 @@ import com.example.demo.entities.*;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CityRepository;
 import com.example.demo.util.BaseUtil;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.CommandLineRunner;
@@ -63,6 +70,28 @@ public class DemoApplication {
 		   }catch (Exception ignore){}
 	   };
    }
+    @Bean
+	public SecurityScheme createAPIKeyScheme() {
+		return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+				.bearerFormat("JWT")
+				.scheme("bearer");
+	}
+
+	@Bean
+	public OpenAPI openAPI() {
+		return new OpenAPI().addSecurityItem(new SecurityRequirement()
+						.addList("Bearer Authentication"))
+				.components(new Components().addSecuritySchemes(
+						"Bearer Authentication", createAPIKeyScheme()))
+				.info(new Info().title("My REST API")
+						.description("Some custom description of API.")
+						.version("1.0").contact(new Contact().name("Soliyev Boburjon")
+								.email("http://localhost:8080").url("soliyevboburjon95@@gmail.com"))
+						.license(new License().name("License of API")
+								.url("API license URL")));
+	}
+
+
 	@Bean
 	public GroupedOpenApi admin() {
 		return GroupedOpenApi.builder()

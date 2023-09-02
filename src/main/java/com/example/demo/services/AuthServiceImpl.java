@@ -1,6 +1,5 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.entities.ActivateCodes;
 import com.example.demo.entities.AuthUser;
@@ -14,12 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.MailAuthenticationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -129,7 +125,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(String email, String password) {
-        return jwtTokenUtil.generateToken(email,password);
+    public String login(String email, String password, HttpServletResponse res) {
+        String s = jwtTokenUtil.generateToken(email, password);
+        res.setHeader("Authorization","Bearar "+s);
+        return s;
     }
 }

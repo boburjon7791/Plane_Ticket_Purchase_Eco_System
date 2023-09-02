@@ -1,6 +1,5 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,5 +13,5 @@ public interface AuthService {
                   HttpServletRequest req, HttpServletResponse res);
     void generateAgainActivationCode(@NonNull String email, HttpServletRequest req, HttpServletResponse res);
 
-    String login(String email, String password);
+    String login(String email, String password, HttpServletResponse res);
 }

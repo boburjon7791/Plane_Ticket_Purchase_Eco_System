@@ -27,10 +27,10 @@ public class AuthController {
         authService.register(authUserDtor,res,req);
     }
     @PostMapping("/login")
-    public String login(@RequestParam Map<String,String> param){
+    public String login(@RequestParam Map<String,String> param, HttpServletResponse res){
         String email = param.get("email");
         String password = param.get("password");
-        return authService.login(email,password);
+        return authService.login(email,password,res);
     }
 
     @PostMapping("/activate/{code}")
