@@ -126,18 +126,24 @@ public class FlightServiceImpl implements FlightService {
     public FlightDtoR flightEdit(FlightDtoR flightDtoR, Map<String, String> param) {
         try {
             int hour=-7;
-            int minute=-10;
+            int minute=0;
             UUID fromId = flightDtoR.getFromId();
             UUID toId = flightDtoR.getToId();
             Optional<City> byIdFrom = cityRepository.findById(fromId);
             Optional<City> byIdTo = cityRepository.findById(toId);
             Optional<Airport> byIdAirport = airportRepository.findById(flightDtoR.getAirportId());
             try {
-                hour= Integer.parseInt(param.get("hour"));
+                try {
+                    hour= Integer.parseInt(param.get("hour"));
+                }catch (Exception e){
+                    e.printStackTrace();
+                    log.info("{}",Arrays.toString(e.getStackTrace()));
+                    return null;
+                }
                 minute= Integer.parseInt(param.get("minute"));
             }catch (Exception e){
-                e.printStackTrace();
-                log.info("{}",Arrays.toString(e.getStackTrace()));
+//                e.printStackTrace();
+//                log.info("{}",Arrays.toString(e.getStackTrace()));
             }
             UUID id = flightDtoR.getId();
             Optional<Flight> byId = flightRepository.findById(id);
