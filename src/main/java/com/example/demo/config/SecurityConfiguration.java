@@ -47,6 +47,8 @@ public class SecurityConfiguration {
                         ServletOutputStream outputStream = response.getOutputStream();
                         mapper.writeValue(outputStream, errorDto);
                         response.setStatus(401);
+                        outputStream.flush();
+                        outputStream.close();
                     });
                 })
                 .exceptionHandling(errorConfig -> {
