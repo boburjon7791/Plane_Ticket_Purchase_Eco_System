@@ -13,6 +13,7 @@ import com.example.demo.repositories.AirportRepository;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CityRepository;
 import com.example.demo.repositories.FlightRepository;
+import com.example.demo.util.BaseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -78,7 +79,7 @@ public class FlightServiceImpl implements FlightService {
                     .findFirst();
             String fromZone = first.orElseThrow();*/
 
-            String gmtFrom = flight.getFrom().getGmt();
+            /*String gmtFrom = flight.getFrom().getGmt();
             Optional<String> fromZ = ZoneId.getAvailableZoneIds().stream()
                     .filter(s ->
                             ZoneId.of(s).getRules().toString().equals(gmtFrom))
@@ -90,7 +91,11 @@ public class FlightServiceImpl implements FlightService {
                     .filter(s ->
                             ZoneId.of(s).getRules().toString().equals(gmtTo))
                     .findFirst();
-            String toZone = toZ.orElseThrow();
+            String toZone = toZ.orElseThrow();*/
+
+            String fromZone = BaseUtil.gmtsMap.get(flight.getFrom().getGmt());
+
+            String toZone = BaseUtil.gmtsMap.get(flight.getTo().getGmt());
 
             /*String to = toCity.getName();
 
@@ -151,9 +156,20 @@ public class FlightServiceImpl implements FlightService {
             LocalDateTime oldToTime = byId.orElseThrow().getToTime();
 
             Flight flight = flightMapper.toEntity(flightDtoR,byIdTo.orElseThrow(),byIdFrom.orElseThrow(),byIdAirport.orElseThrow());
-            LocalDateTime toDateTime = flight.getFromTime().plusHours(hour).plusMinutes(minute).
-                    atZone(ZoneId.of(flight.getFrom().getName())).toLocalDateTime();
-            flight.setToTime(toDateTime);
+            /*LocalDateTime toDateTime = flight.getFromTime().plusHours(hour).plusMinutes(minute).
+                    atZone(ZoneId.of(flight.getFrom().getName())).toLocalDateTime();*/
+            String fromZone = BaseUtil.gmtsMap.get(flight.getFrom().getGmt());
+
+            String toZone = BaseUtil.gmtsMap.get(flight.getTo().getGmt());
+
+            ZonedDateTime zdtFrom = flight.getFromTime().atZone(ZoneId.of(fromZone));
+            ZonedDateTime zdtTo = zdtFrom.plusHours(hour).plusMinutes(minute);
+            ZonedDateTime zdtToTime = zdtTo.withZoneSameInstant(ZoneId.of(toZone));
+
+            flight.setFromTime(zdtFrom.toLocalDateTime());
+
+            flight.setToTime(zdtToTime.toLocalDateTime());
+
             Flight save = flightRepository.save(flight);
             agentService.sendReportEditFlight(save,oldFromTime,oldToTime);
             FlightDtoR dto = flightMapper.toDto(save);

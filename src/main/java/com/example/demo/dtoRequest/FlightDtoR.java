@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,6 +37,8 @@ public class FlightDtoR {
 
     @NotNull
     public UUID toId;
+
+
 
     @NotNull
     @Positive
