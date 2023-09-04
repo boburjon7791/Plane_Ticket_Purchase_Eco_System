@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
             String email = saved.getEmail();
             ActivateCodes activateCodes = ActivateCodes.builder()
                     .authUser(authUser).build();
+            System.out.println("when generated activateCodes.getValid() = " + activateCodes.getValid());
 
             Integer code = activateCodes.getCode();
             System.out.println("email = " + email);
@@ -82,8 +84,14 @@ public class AuthServiceImpl implements AuthService {
                          HttpServletRequest req,HttpServletResponse res) throws ConstraintViolationException {
         ActivateCodes byCode=null;
         try {
-            byCode = activateCodesRepository.findByCode(code);
+            byCode = activateCodesRepository.findById(code).orElseThrow();
             check(byCode);
+            System.out.println("when activate byCode.getValid() = " + byCode.getValid());
+            if (byCode.getValid().isBefore(LocalDateTime.now())) {
+                res.setStatus(400);
+                activateCodesRepository.deleteByCode(code);
+                return;
+            }
             AuthUser authUser = byCode.getAuthUser();
             String email1 = authUser.getEmail();
             System.out.println("email1 = " + email1);
@@ -91,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
                 authUser.setBlocked(false);
                 authUserRepository.save(authUser);
                 res.setStatus(200);
-//                activateCodesRepository.deleteByCode(code);
+                activateCodesRepository.deleteByCode(code);
                 log.info("{} acivated",authUser);
                 JwtTokenUtil.removeCookie(req,res,"email",authUser.getEmail());
             }else {
@@ -109,11 +117,13 @@ public class AuthServiceImpl implements AuthService {
     @Async
     public void generateAgainActivationCode(@NonNull String email, HttpServletRequest req, HttpServletResponse res) {
         try {
-            AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
+            AuthUser authUser = authUserRepository.findByEmailSpecial(email);
             ActivateCodes activateCodes = ActivateCodes.builder()
                     .authUser(authUser)
                     .build();
             check(activateCodes);
+            authUser.getActivateCodes().forEach(System.out::println);
+            activateCodesRepository.deleteOldCodes();
             activateCodesRepository.save(activateCodes);
             JwtTokenUtil.addCookie(req,res,"email",authUser.getEmail());
             javaMailSenderService.send(activateCodes,specialMessage);

@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.UUID;
 
 public interface AuthUserRepository extends JpaRepository<AuthUser, UUID>, JpaSpecificationExecutor<AuthUser> {
+   @Query(nativeQuery = true, value = "select * from system_of_airline.auth_user au where au.email=?1")
+   AuthUser findByEmailSpecial(String email);
    AuthUser findByEmailAndBlockedFalse(String email);
 
    @Modifying

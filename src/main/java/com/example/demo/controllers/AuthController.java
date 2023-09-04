@@ -39,8 +39,8 @@ public class AuthController {
         String email = param.get("email");
         authService.activate(code,email,req,res);
     }
-    @PostMapping("/again-sent-code")
-    public void sendAgain(@CookieValue(name = "email") String email,
+    @PostMapping("/again-sent-code/{email}")
+    public void sendAgain(@PathVariable String email,
                           HttpServletRequest req,
                           HttpServletResponse res){
         authService.generateAgainActivationCode(email,req,res);
