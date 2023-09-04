@@ -47,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
                          HttpServletResponse res,
                          HttpServletRequest req){
         try {
+            activateCodesRepository.deleteOldCodes();
             Optional<Company> byId= Optional.empty();
             if (authUserDtoR.companyId!=null) {
                 UUID companyId = authUserDtoR.getCompanyId();
@@ -84,6 +85,7 @@ public class AuthServiceImpl implements AuthService {
                          HttpServletRequest req,HttpServletResponse res) throws ConstraintViolationException {
         ActivateCodes byCode=null;
         try {
+            activateCodesRepository.deleteOldCodes();
             byCode = activateCodesRepository.findById(code).orElseThrow();
             check(byCode);
             System.out.println("when activate byCode.getValid() = " + byCode.getValid());
@@ -117,13 +119,13 @@ public class AuthServiceImpl implements AuthService {
     @Async
     public void generateAgainActivationCode(@NonNull String email, HttpServletRequest req, HttpServletResponse res) {
         try {
+            activateCodesRepository.deleteOldCodes();
             AuthUser authUser = authUserRepository.findByEmailSpecial(email);
             ActivateCodes activateCodes = ActivateCodes.builder()
                     .authUser(authUser)
                     .build();
             check(activateCodes);
             authUser.getActivateCodes().forEach(System.out::println);
-            activateCodesRepository.deleteOldCodes();
             activateCodesRepository.save(activateCodes);
             JwtTokenUtil.addCookie(req,res,"email",authUser.getEmail());
             javaMailSenderService.send(activateCodes,specialMessage);
@@ -136,6 +138,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(String email, String password, HttpServletResponse res) {
+        activateCodesRepository.deleteOldCodes();
         String s = jwtTokenUtil.generateToken(email, password);
         res.setHeader("Authorization","Bearar "+s);
         return s;

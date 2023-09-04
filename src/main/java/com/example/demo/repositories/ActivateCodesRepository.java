@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -18,6 +19,7 @@ public interface ActivateCodesRepository extends JpaRepository<ActivateCodes, In
 
   @Modifying
   @Transactional
+  @Async
   @Query(nativeQuery = true,value = "delete from system_of_airline.activate_codes ac where ac.valid<now()")
   void deleteOldCodes();
 
