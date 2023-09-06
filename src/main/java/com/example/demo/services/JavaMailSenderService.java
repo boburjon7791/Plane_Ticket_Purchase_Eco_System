@@ -33,6 +33,7 @@ public class JavaMailSenderService {
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}", Arrays.toString(e.getStackTrace()));
+            throw new RuntimeException();
         }
     }
     @Async
@@ -48,6 +49,7 @@ public class JavaMailSenderService {
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}", Arrays.toString(e.getStackTrace()));
+            throw new RuntimeException();
         }
     }
 }
