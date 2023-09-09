@@ -143,4 +143,17 @@ public class AuthServiceImpl implements AuthService {
         res.setHeader("Authorization","Bearar "+s);
         return s;
     }
+
+    @Override
+    public AuthUserDtoR get(UUID id) {
+        try {
+            AuthUser authUser = authUserRepository.findById(id).orElseThrow();
+            log.info("{} get info about self",authUser);
+            return authUserMapper.toDto(authUser);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.warn("{}",Arrays.toString(e.getStackTrace()));
+            throw new RuntimeException();
+        }
+    }
 }

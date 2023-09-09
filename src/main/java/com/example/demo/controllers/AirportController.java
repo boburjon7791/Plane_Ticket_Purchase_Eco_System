@@ -6,6 +6,9 @@ import com.example.demo.services.AirportService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,7 @@ public class AirportController {
         return new ResponseEntity<>(airport.getId(),HttpStatus.CREATED);
     }
     @GetMapping("/get/{name}")
+    @Cacheable(key = "#name",value = "airports")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AirportDtoR> getAirport(@PathVariable String name){
         AirportDtoR airport = airportService.getAirport(name);
@@ -48,6 +52,7 @@ public class AirportController {
     }
     @PutMapping("/update/{name}")
     @Transactional
+    @CachePut(key = "#name",value = "airports")
     public ResponseEntity<UUID> updateAirport(@PathVariable String name,
                                                     @RequestBody @Valid AirportDtoR airportDtor){
         airportDtor.setName(name);
@@ -56,6 +61,7 @@ public class AirportController {
     }
     @DeleteMapping("/delete/{name}")
     @Transactional
+    @CacheEvict(key = "#name",value = "airports")
     public void deleteAirport(@PathVariable String name){
         airportService.deleteAirport(name);
     }

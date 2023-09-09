@@ -5,6 +5,9 @@ import com.example.demo.dtoRequest.CompanyDtoR;
 import com.example.demo.services.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,7 @@ public class CompanyController {
         return companyService.getAllCompanies(page, size);
     }
     @GetMapping("/get/{name}")
+    @Cacheable(key = "#name",value = "companies")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CompanyDtoR> getCompany(@PathVariable String name){
         CompanyDtoR companyDto = companyService.companyGet(name);
@@ -49,6 +53,7 @@ public class CompanyController {
 
     @PutMapping("/update/{name}")
     @Transactional
+    @CachePut(key = "#name",value = "companies")
     public ResponseEntity<UUID> updateCompany(@PathVariable String name,
                                               @RequestBody @Valid CompanyDtoR companyDtoR){
         companyDtoR.setName(name);
@@ -58,6 +63,7 @@ public class CompanyController {
 
     @DeleteMapping("/delete/{name}")
     @Transactional
+    @CacheEvict(key = "#name",value = "companies")
     public void deleteCompany(@PathVariable String name){
         companyService.companyDelete(name);
     }

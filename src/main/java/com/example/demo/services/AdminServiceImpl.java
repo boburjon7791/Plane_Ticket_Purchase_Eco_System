@@ -45,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void setRoleAgent(String email, String companyId) {
          try {
-             authUserRepository.setAgentRole(email, companyId);
+             authUserRepository.setAgentRole(UUID.fromString(companyId),email);
              log.info("{} agent",email);
          }catch (Exception e){
              e.printStackTrace();

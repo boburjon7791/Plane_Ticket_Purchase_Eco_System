@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 @Component
@@ -29,9 +30,13 @@ public interface AuthUserMapper {
               .build();
    }
    default AuthUserDtoR toDto(AuthUser authUser){
+      UUID companyId = null;
+      if (authUser.getCompany() != null) {
+         companyId = authUser.getCompany().getId();
+      }
       return AuthUserDtoR.builder()
               .id(authUser.getId())
-              .companyId(Objects.requireNonNullElse(authUser.getCompany().getId(), null))
+              .companyId(companyId)
               .blocked(authUser.getBlocked())
               .email(authUser.getEmail())
               .firstName(authUser.getFirstName())

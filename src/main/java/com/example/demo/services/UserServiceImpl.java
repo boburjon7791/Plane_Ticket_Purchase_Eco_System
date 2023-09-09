@@ -11,8 +11,10 @@ import com.example.demo.repositories.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,15 +26,21 @@ public class UserServiceImpl implements UserService {
     public final AuthUserRepository authUserRepository;
     public final AuthUserMapper authUserMapper;
     @Override
+    @Transactional
     public AuthUserDtoR updateAuthUser(AuthUserDtoR authUserDtoR) {
         try {
             UUID companyId = authUserDtoR.getCompanyId();
-            Optional<Company> byId = companyRepository.findById(companyId);
-            AuthUser authUser = authUserMapper.toEntity(authUserDtoR,byId.orElseThrow());
+            Company company = null;
+            if (companyId != null) {
+                Optional<Company> byId = companyRepository.findById(companyId);
+                if (byId.isPresent()) {
+                    company = byId.get();
+                }
+            }
+            AuthUser authUser = authUserMapper.toEntity(authUserDtoR, company);
             AuthUser saved = authUserRepository.save(authUser);
             AuthUserDtoR dto = authUserMapper.toDto(saved);
-            log.info("{} updated",dto);
-//            setNull(dto);
+            log.info("{} updated", dto);
             return dto;
         }catch (Exception e){
             e.printStackTrace();

@@ -6,6 +6,9 @@ import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.services.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +32,7 @@ public class FlightController {
         return new ResponseEntity<>(create.getId(), HttpStatus.CREATED);
     }
     @GetMapping("/get-id/{id}")
+    @Cacheable(key = "#id",value = "flights")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<FlightDtoR> getFlightId(@PathVariable String id){
         FlightDtoR flightDto = flightService.flightsGet(UUID.fromString(id));
@@ -42,6 +46,7 @@ public class FlightController {
         return flightService.getAllFlights(size, page);
     }
     @PutMapping("/update/{id}")
+    @CachePut(key = "#id",value = "flights")
     @Transactional
     public ResponseEntity<UUID> updateFlight(@PathVariable UUID id,
                                                   @Valid @RequestBody FlightDtoR flightDtoR,
@@ -64,6 +69,7 @@ public class FlightController {
     }
     @DeleteMapping("/delete/{id}")
     @Transactional
+    @CacheEvict(key = "#id",value = "flights")
     public void deleteFlight(@PathVariable UUID id){
         flightService.flightDelete(id);
     }

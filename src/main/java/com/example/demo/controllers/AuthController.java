@@ -7,12 +7,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api.auth")
@@ -44,5 +46,10 @@ public class AuthController {
                           HttpServletRequest req,
                           HttpServletResponse res){
         authService.generateAgainActivationCode(email,req,res);
+    }
+    @GetMapping("/{id}")
+    @Cacheable(key = "#id",value = "authUsers")
+    public ResponseEntity<AuthUserDtoR> getInfo(@PathVariable String id){
+        return ResponseEntity.ok(authService.get(UUID.fromString(id)));
     }
 }

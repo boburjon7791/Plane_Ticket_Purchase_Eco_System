@@ -5,6 +5,9 @@ import com.example.demo.dtoRequest.CityDtoR;
 import com.example.demo.services.CityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +43,7 @@ public class CityController {
     }
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/get/{name}")
+    @Cacheable(key = "#name",value = "cities")
     public ResponseEntity<CityDtoR> getCity(@PathVariable String name){
         CityDtoR cityDto = cityService.cityRead(name);
         return new ResponseEntity<>(cityDto, HttpStatus.OK);
@@ -53,6 +57,7 @@ public class CityController {
     }
 
     @PutMapping("/update/{name}")
+    @CachePut(key = "#name",value = "cities")
     @Transactional
     public ResponseEntity<UUID> updateCity(@PathVariable String name, @Valid @RequestBody CityDtoR cityDtoR){
         cityDtoR.setName(name);
@@ -62,6 +67,7 @@ public class CityController {
 
     @DeleteMapping("/delete/{name}")
     @Transactional
+    @CacheEvict(key = "#name",value = "cities")
     public void deleteCity(@PathVariable String name){
         cityService.cityDelete(name);
     }

@@ -13,30 +13,38 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.ZoneId;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @RequiredArgsConstructor
 @EnableAsync
+@EnableCaching
+@Slf4j
+@EnableScheduling
 public class DemoApplication {
     public final AuthUserRepository authUserRepository;
 	public final PasswordEncoder passwordEncoder;
 	private final CityRepository cityRepository;
-
+    private final CacheManager cacheManager;
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
@@ -132,5 +140,12 @@ public class DemoApplication {
 						"/api.flight/reserve/**",
 						"/api.flight/cancel/**")
 				.build();
+	}
+	@Scheduled(fixedDelay = 1,initialDelay = 1,timeUnit = TimeUnit.MINUTES)
+	public void clearAllCaches(){
+		cacheManager.getCacheNames().parallelStream()
+						.forEach(name -> Objects.requireNonNull(cacheManager.
+								getCache(Objects.requireNonNullElse(name, ""))).clear());
+		log.info("cleared all caches");
 	}
 }
