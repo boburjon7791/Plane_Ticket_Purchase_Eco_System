@@ -5,13 +5,22 @@ import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.Company;
+import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.mappers.AuthUserMapper;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -29,6 +38,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public AuthUserDtoR updateAuthUser(AuthUserDtoR authUserDtoR) {
         try {
+            Optional<AuthUser> optionalAuthUser = authUserRepository.findById(authUserDtoR.getId());
+            optionalAuthUser.ifPresent(authUser -> {
+                if (!authUser.getRole().name().equals(authUserDtoR.getRole())) {
+                    throw new ForbiddenAccessException();
+                }
+                if(!authUser.getBlocked().equals(authUserDtoR.getBlocked())){
+                    throw new ForbiddenAccessException();
+                }
+            });
             UUID companyId = authUserDtoR.getCompanyId();
             Company company = null;
             if (companyId != null) {
