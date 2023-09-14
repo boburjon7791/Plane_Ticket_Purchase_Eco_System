@@ -8,6 +8,8 @@ import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 @Component
 public interface FlightMapper {
@@ -40,5 +42,12 @@ public interface FlightMapper {
             return null;
         }
         return flights.map(this::toDto);
+    }
+
+    default List<FlightDtoR> toDtoPage(List<Flight> allByDate){
+        if (allByDate==null || allByDate.isEmpty()) {
+            return null;
+        }
+        return allByDate.stream().map(this::toDto).toList();
     }
 }

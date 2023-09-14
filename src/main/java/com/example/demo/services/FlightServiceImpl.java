@@ -22,10 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.zone.ZoneRules;
 import java.util.*;
 
@@ -207,6 +204,32 @@ public class FlightServiceImpl implements FlightService {
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}",Arrays.toString(e.getStackTrace()));
+            return null;
+        }
+    }
+
+    @Override
+    public List<FlightDtoR> flightsGet(LocalDate time) {
+        try {
+            List<Flight> allByDate = flightRepository.findAllByDate(time);
+            if (allByDate==null) {
+                return new ArrayList<>();
+            }
+            Set<String> zoneIds = ZoneId.getAvailableZoneIds();
+            allByDate.forEach(flight -> {
+                Optional<String> firstFrom = zoneIds.stream().filter(s -> ZoneId.of(s).getRules().toString()
+                        .equals(flight.getFrom().getGmt())).findFirst();
+                Optional<String> firstTo = zoneIds.stream().filter(s -> ZoneId.of(s).getRules().toString()
+                        .equals(flight.getTo().getGmt())).findFirst();
+                flight.setFromTime(flight.getFromTime().atZone(ZoneId.of(firstFrom.orElseThrow())).toLocalDateTime());
+                flight.setToTime(flight.getToTime().atZone(ZoneId.of(firstTo.orElseThrow())).toLocalDateTime());
+            });
+            List<FlightDtoR> flightDtoRList = flightMapper.toDtoPage(allByDate);
+            log.info("{} gave",flightDtoRList);
+            return flightDtoRList;
+        }catch (Exception e){
+            e.printStackTrace();
+            log.warn("{}",Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
