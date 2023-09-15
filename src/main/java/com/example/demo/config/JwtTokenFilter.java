@@ -27,6 +27,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
+        System.out.println("request.getRemoteAddr() = " + request.getRemoteAddr());
+        String UserAgent = request.getHeader("User-Agent");
+        System.out.println("UserAgent = " + UserAgent);
+        String OS = request.getHeader("OS");
+        System.out.println("OS = " + OS);
         if (authorization==null || authorization.isBlank()) {
             filterChain.doFilter(request,response);
             return;

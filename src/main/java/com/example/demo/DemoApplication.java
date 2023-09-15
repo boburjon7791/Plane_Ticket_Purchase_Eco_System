@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.controllers.CityController;
 import com.example.demo.entities.*;
+import com.example.demo.repositories.ActivateCodesRepository;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CityRepository;
 import com.example.demo.util.BaseUtil;
@@ -41,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @EnableScheduling
 public class DemoApplication {
-    public final AuthUserRepository authUserRepository;
+	private final ActivateCodesRepository activateCodesRepository;
+	public final AuthUserRepository authUserRepository;
 	public final PasswordEncoder passwordEncoder;
 	private final CityRepository cityRepository;
     private final CacheManager cacheManager;
@@ -141,8 +143,9 @@ public class DemoApplication {
 						"/api.flight/cancel/**")
 				.build();
 	}
-	@Scheduled(fixedDelay = 1,initialDelay = 1,timeUnit = TimeUnit.MINUTES)
-	public void clearAllCaches(){
+	@Scheduled(fixedDelay = 1,initialDelay = 1,timeUnit = TimeUnit.HOURS)
+	public void clearOldData(){
+		activateCodesRepository.deleteOldCodes();
 		cacheManager.getCacheNames().parallelStream()
 						.forEach(name -> Objects.requireNonNull(cacheManager.
 								getCache(Objects.requireNonNullElse(name, ""))).clear());

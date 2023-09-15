@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
                          HttpServletResponse res,
                          HttpServletRequest req){
         try {
-            activateCodesRepository.deleteOldCodes();
+//            activateCodesRepository.deleteOldCodes();
             Optional<Company> byId= Optional.empty();
             if (authUserDtoR.companyId!=null) {
                 UUID companyId = authUserDtoR.getCompanyId();
@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
                          HttpServletRequest req,HttpServletResponse res) throws ConstraintViolationException {
         ActivateCodes byCode=null;
         try {
-            activateCodesRepository.deleteOldCodes();
+//            activateCodesRepository.deleteOldCodes();
             byCode = activateCodesRepository.findById(code).orElseThrow();
             check(byCode);
             System.out.println("when activate byCode.getValid() = " + byCode.getValid());
@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
                 authUser.setBlocked(false);
                 authUserRepository.save(authUser);
                 res.setStatus(200);
-                activateCodesRepository.deleteByCode(code);
+//                activateCodesRepository.deleteByCode(code);
                 log.info("{} acivated",authUser);
                 JwtTokenUtil.removeCookie(req,res,"email",authUser.getEmail());
             }else {
@@ -119,7 +119,7 @@ public class AuthServiceImpl implements AuthService {
     @Async
     public void generateAgainActivationCode(@NonNull String email, HttpServletRequest req, HttpServletResponse res) {
         try {
-            activateCodesRepository.deleteOldCodes();
+//            activateCodesRepository.deleteOldCodes();
             AuthUser authUser = authUserRepository.findByEmailSpecial(email);
             ActivateCodes activateCodes = ActivateCodes.builder()
                     .authUser(authUser)
@@ -138,7 +138,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(String email, String password, HttpServletResponse res) {
-        activateCodesRepository.deleteOldCodes();
+//        activateCodesRepository.deleteOldCodes();
         String s = jwtTokenUtil.generateToken(email, password);
         res.setHeader("Authorization","Bearar "+s);
         return s;
