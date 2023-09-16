@@ -65,9 +65,9 @@ public class CityController {
         return new ResponseEntity<>(cityEdit.getId(),HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{name}")
-    @Transactional
-    @CacheEvict(key = "#name",value = "cities")
+//    @DeleteMapping("/delete/{name}")
+//    @Transactional
+//    @CacheEvict(key = "#name",value = "cities")
     public void deleteCity(@PathVariable String name){
         cityService.cityDelete(name);
     }

@@ -8,6 +8,7 @@ import com.example.demo.entities.Airport;
 import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.City;
 import com.example.demo.entities.Flight;
+import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.mappers.FlightMapper;
 import com.example.demo.repositories.AirportRepository;
 import com.example.demo.repositories.AuthUserRepository;
@@ -166,6 +167,12 @@ public class FlightServiceImpl implements FlightService {
             flight.setFromTime(zdtFrom.toLocalDateTime());
 
             flight.setToTime(zdtToTime.toLocalDateTime());
+
+
+            Flight flight1 = byId.orElseThrow();
+            if (!flight1.getAuthUsers().equals(flight.getAuthUsers())) {
+                throw new ForbiddenAccessException();
+            }
 
             Flight save = flightRepository.save(flight);
             agentService.sendReportEditFlight(save,oldFromTime,oldToTime);

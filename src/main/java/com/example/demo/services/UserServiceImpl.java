@@ -11,19 +11,10 @@ import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,8 +34,21 @@ public class UserServiceImpl implements UserService {
                 if (!authUser.getRole().name().equals(authUserDtoR.getRole())) {
                     throw new ForbiddenAccessException();
                 }
+
                 if(!authUser.getBlocked().equals(authUserDtoR.getBlocked())){
                     throw new ForbiddenAccessException();
+                }
+
+                if (authUserDtoR.getFlights()!=null) {
+                    if (!authUserDtoR.getFlights().equals(authUser.getFlights())) {
+                        throw new ForbiddenAccessException();
+                    }
+                }
+
+                if (authUserDtoR.getActivateCodes()!=null) {
+                    if (!authUser.getActivateCodes().equals(authUserDtoR.getActivateCodes())) {
+                        throw new ForbiddenAccessException();
+                    }
                 }
             });
             UUID companyId = authUserDtoR.getCompanyId();
@@ -55,6 +59,7 @@ public class UserServiceImpl implements UserService {
                     company = byId.get();
                 }
             }
+
             AuthUser authUser = authUserMapper.toEntity(authUserDtoR, company);
             AuthUser saved = authUserRepository.save(authUser);
             AuthUserDtoR dto = authUserMapper.toDto(saved);

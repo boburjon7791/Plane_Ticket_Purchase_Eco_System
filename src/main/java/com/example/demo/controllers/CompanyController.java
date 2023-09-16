@@ -61,9 +61,9 @@ public class CompanyController {
         return new ResponseEntity<>(edited.getId(),HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{name}")
-    @Transactional
-    @CacheEvict(key = "#name",value = "companies")
+//    @DeleteMapping("/delete/{name}")
+//    @Transactional
+//    @CacheEvict(key = "#name",value = "companies")
     public void deleteCompany(@PathVariable String name){
         companyService.companyDelete(name);
     }

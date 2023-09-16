@@ -4,6 +4,7 @@ import com.example.demo.dto.AirportDto;
 import com.example.demo.dtoRequest.AirportDtoR;
 import com.example.demo.entities.Airport;
 import com.example.demo.entities.Company;
+import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.mappers.AirportMapper;
 import com.example.demo.repositories.AirportRepository;
 import com.example.demo.repositories.CompanyRepository;
@@ -66,6 +67,16 @@ public class AirportServiceImpl implements AirportService {
             UUID companyId = airportDtor.getCompanyId();
             Optional<Company> byId = companyRepository.findById(companyId);
             Airport airport = airportMapper.toEntity(airportDtor,byId.orElseThrow());
+            Airport airport1 = airportRepository.findById(airport.getId()).orElseThrow();
+            if (!airport1.getCompany().getId().equals(airport.getCompany().getId())) {
+                throw new ForbiddenAccessException();
+            }
+            if (!airport1.getFlights().equals(airport.getFlights())) {
+                throw new ForbiddenAccessException();
+            }
+            if (!airport.getCities().equals(airport1.getCities())) {
+                throw new ForbiddenAccessException();
+            }
             Airport save = airportRepository.save(airport);
             AirportDtoR dto = airportMapper.toDto(save, save.getCompany());
             log.info("{} updated",dto);

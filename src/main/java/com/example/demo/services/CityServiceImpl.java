@@ -5,6 +5,7 @@ import com.example.demo.dto.CityDto;
 import com.example.demo.dtoRequest.CityDtoR;
 import com.example.demo.entities.Airport;
 import com.example.demo.entities.City;
+import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.mappers.CityMapper;
 import com.example.demo.repositories.CityRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +67,13 @@ public class CityServiceImpl implements CityService {
             city.setGmt(s);
         }
         try {
+            City city1 = cityRepository.findById(city.getId()).orElseThrow();
+                if (!city1.getAirports().equals(city.getAirports())) {
+                    throw new ForbiddenAccessException();
+                }
+                if (!city1.getFlights().equals(city.getFlights())) {
+                    throw new ForbiddenAccessException();
+                }
             City save = cityRepository.save(city);
             CityDtoR dto = cityMapper.toDto(save);
             log.info("{} updated",dto);

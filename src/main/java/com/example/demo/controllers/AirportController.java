@@ -59,9 +59,9 @@ public class AirportController {
         AirportDtoR airport = airportService.updateAirport(airportDtor);
         return new ResponseEntity<>(airport.getId(),HttpStatus.OK);
     }
-    @DeleteMapping("/delete/{name}")
-    @Transactional
-    @CacheEvict(key = "#name",value = "airports")
+//    @DeleteMapping("/delete/{name}")
+//    @Transactional
+//    @CacheEvict(key = "#name",value = "airports")
     public void deleteAirport(@PathVariable String name){
         airportService.deleteAirport(name);
     }

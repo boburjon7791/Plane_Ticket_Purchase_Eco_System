@@ -3,6 +3,7 @@ package com.example.demo.services;
 import com.example.demo.dto.CompanyDto;
 import com.example.demo.dtoRequest.CompanyDtoR;
 import com.example.demo.entities.Company;
+import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.mappers.CompanyMapper;
 import com.example.demo.repositories.CompanyRepository;
 import io.swagger.v3.oas.models.links.Link;
@@ -47,6 +48,13 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDtoR companyEdit(CompanyDtoR companyDtoR) {
         try {
             Company company = companyMapper.toEntity(companyDtoR);
+            Company company1 = companyRepository.findById(company.getId()).orElseThrow();
+                if (!company1.getAgent().equals(company.getAgent())) {
+                    throw new ForbiddenAccessException();
+                }
+                if (!company1.getAirports().equals(company.getAirports())) {
+                    throw new ForbiddenAccessException();
+                }
             Company save = companyRepository.save(company);
             CompanyDtoR dto = companyMapper.toDto(save);
             log.info("{} updated",dto);

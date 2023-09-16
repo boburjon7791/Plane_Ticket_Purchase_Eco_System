@@ -70,9 +70,9 @@ public class FlightController {
     public void cancelFlight(@PathVariable UUID id, @RequestParam UUID userID){
         flightService.flightCancel(id,userID);
     }
-    @DeleteMapping("/delete/{id}")
-    @Transactional
-    @CacheEvict(key = "#id",value = "flights")
+//    @DeleteMapping("/delete/{id}")
+//    @Transactional
+//    @CacheEvict(key = "#id",value = "flights")
     public void deleteFlight(@PathVariable UUID id){
         flightService.flightDelete(id);
     }
