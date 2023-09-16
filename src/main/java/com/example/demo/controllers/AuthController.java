@@ -2,7 +2,9 @@ package com.example.demo.controllers;
 
 import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
+import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.services.AuthService;
+import com.example.demo.util.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -29,10 +31,11 @@ public class AuthController {
         authService.register(authUserDtor,res,req);
     }
     @PostMapping("/login")
-    public String login(@RequestParam Map<String,String> param, HttpServletResponse res){
+    public ResponseEntity<AuthUserDtoR> login(@RequestParam Map<String,String> param, HttpServletResponse res){
         String email = param.get("email");
         String password = param.get("password");
-        return authService.login(email,password,res);
+        AuthUserDtoR login = authService.login(email, password, res);
+        return ResponseEntity.ok(login);
     }
 
     @PostMapping("/activate/{code}")
@@ -49,7 +52,15 @@ public class AuthController {
     }
     @GetMapping("/{id}")
     @Cacheable(key = "#id",value = "authUsers")
-    public ResponseEntity<AuthUserDtoR> getInfo(@PathVariable String id){
-        return ResponseEntity.ok(authService.get(UUID.fromString(id)));
+    public ResponseEntity<AuthUserDtoR> getInfo(HttpServletRequest request,@PathVariable String id){
+        AuthUserDtoR body = authService.get(UUID.fromString(id));
+        String email = JwtTokenUtil.getEmail(request);
+        if (email==null) {
+            return null;
+        }
+        if (!email.equals(body.getEmail())) {
+            throw new ForbiddenAccessException();
+        }
+        return ResponseEntity.ok(body);
     }
 }

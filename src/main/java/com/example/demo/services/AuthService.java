@@ -15,7 +15,7 @@ public interface AuthService {
                   HttpServletRequest req, HttpServletResponse res);
     void generateAgainActivationCode(@NonNull String email, HttpServletRequest req, HttpServletResponse res);
 
-    String login(String email, String password, HttpServletResponse res);
+    AuthUserDtoR login(String email, String password, HttpServletResponse res);
 
     AuthUserDtoR get(UUID id);
 }

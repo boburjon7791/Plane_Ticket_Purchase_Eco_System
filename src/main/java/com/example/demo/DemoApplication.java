@@ -108,7 +108,14 @@ public class DemoApplication {
 	public GroupedOpenApi admin() {
 		return GroupedOpenApi.builder()
 				.group("admin")
-				.pathsToMatch("/**")
+				.pathsToMatch("/api.city/**",
+						"/api.company/**",
+						"/api.airport/**",
+						"/api.flight/get/**",
+						"/api.flight/get-id/**",
+						"/api.auth/**",
+						"/api.admin/**",
+						"/api.user/**")
 				.build();
 	}
 	@Bean
@@ -121,6 +128,7 @@ public class DemoApplication {
 						"/api.company/get/**",
 						"/api.company/get-id/**",
 						"/api.airport/get/**",
+						"/api.user/**",
 						"/api.airport/get-id/**",
 						"/api.auth/**")
 				.build();
@@ -129,7 +137,7 @@ public class DemoApplication {
 	public GroupedOpenApi customer() {
 		return GroupedOpenApi.builder()
 				.group("customer")
-				.pathsToMatch(
+				.pathsToMatch("/api.user/**",
 						"/api.city/get/**",
 						"/api.city/get-id/**",
 						"/api.company/get/**",

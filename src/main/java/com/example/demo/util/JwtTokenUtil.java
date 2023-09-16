@@ -76,6 +76,22 @@ public class JwtTokenUtil {
             return null;
         }
     }
+    public static String getEmail(HttpServletRequest req){
+        try {
+            String authorization = req.getHeader("Authorization");
+            String substring = authorization.substring(7);
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(substring)
+                    .getBody();
+            System.out.println("claims = " + claims);
+            return claims.getSubject();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
     public static String expireToken(@NonNull String token){
         try {
             Claims claims = Jwts.parserBuilder()

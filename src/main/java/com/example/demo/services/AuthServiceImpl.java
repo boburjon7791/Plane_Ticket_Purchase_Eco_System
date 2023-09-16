@@ -137,11 +137,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(String email, String password, HttpServletResponse res) {
+    public AuthUserDtoR login(String email, String password, HttpServletResponse res) {
 //        activateCodesRepository.deleteOldCodes();
         String s = jwtTokenUtil.generateToken(email, password);
         res.setHeader("Authorization","Bearar "+s);
-        return s;
+        AuthUser byEmailSpecial = authUserRepository.findByEmailSpecial(email);
+        return authUserMapper.toDto(byEmailSpecial);
     }
 
     @Override

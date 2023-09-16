@@ -4,6 +4,8 @@ import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.services.UserService;
+import com.example.demo.util.JwtTokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
@@ -20,7 +22,11 @@ public class UserController {
     public final UserService userService;
     @PutMapping("/edit/{email}")
     @CachePut(key = "#authUserDtoR.id", value = "authUsers")
-    public ResponseEntity<AuthUserDtoR> editUser(@RequestBody @Valid AuthUserDtoR authUserDtoR){
+    public ResponseEntity<AuthUserDtoR> editUser(HttpServletRequest request, @RequestBody @Valid AuthUserDtoR authUserDtoR){
+        String email = JwtTokenUtil.getEmail(request);
+        if (!authUserDtoR.getEmail().equals(email)) {
+            throw new ForbiddenAccessException();
+        }
         AuthUserDtoR updated = userService.updateAuthUser(authUserDtoR);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
