@@ -36,4 +36,7 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, UUID>, JpaSp
    @Modifying
    @Query(value = "update AuthUser set role=Role.CUSTOMER where email=?1")
    void removeAgentRole(String email);
+
+   @Query(value = "select exists (select au.email from AuthUser au where au.email=?1)")
+   boolean existEmail(String email);
 }

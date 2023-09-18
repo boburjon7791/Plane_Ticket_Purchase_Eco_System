@@ -30,8 +30,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         System.out.println("request.getRemoteAddr() = " + request.getRemoteAddr());
         String UserAgent = request.getHeader("User-Agent");
         System.out.println("UserAgent = " + UserAgent);
-        String OS = request.getHeader("OS");
-        System.out.println("OS = " + OS);
         if (authorization==null || authorization.isBlank()) {
             filterChain.doFilter(request,response);
             return;

@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,10 @@ public class AuthServiceImpl implements AuthService {
                     authUserMapper.toEntity(authUserDtoR,byId.orElse(null));
             authUser.setPassword(passwordEncoder.encode(authUser.getPassword()));
             authUser.setBlocked(true);
+            if(authUserRepository.existEmail(authUserDtoR.getEmail())){
+                res.setStatus(HttpStatus.FORBIDDEN.value());
+                return;
+            }
             AuthUser saved = authUserRepository.save(authUser);
             String email = saved.getEmail();
             ActivateCodes activateCodes = ActivateCodes.builder()
