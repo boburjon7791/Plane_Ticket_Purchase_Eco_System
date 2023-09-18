@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface CityRepository extends JpaRepository<City, UUID>, JpaSpecificationExecutor<City> {
     City findByName(String name);
-
+    boolean existsByName(String name);
     @Modifying
     void deleteByName(String name);
 }

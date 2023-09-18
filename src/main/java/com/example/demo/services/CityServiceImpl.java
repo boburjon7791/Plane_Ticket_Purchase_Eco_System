@@ -33,6 +33,9 @@ public class CityServiceImpl implements CityService {
     }
     @Override
     public CityDtoR cityCreate(CityDtoR cityDtoR) {
+        if (cityRepository.existsByName(cityDtoR.name)) {
+            throw new ForbiddenAccessException();
+        }
         City city = cityMapper.toEntity(cityDtoR);
         if (city.getGmt().equals("")) {
             String s = setGmt(setGmt(city.getName()));

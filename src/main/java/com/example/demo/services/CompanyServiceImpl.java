@@ -31,6 +31,9 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyDtoR companyCreate(CompanyDtoR companyDtoR) {
         try {
+            if (companyRepository.existsByName(companyDtoR.name)) {
+                throw new ForbiddenAccessException();
+            }
             Company company = companyMapper.toEntity(companyDtoR);
             Company save = companyRepository.save(company);
             CompanyDtoR dto = companyMapper.toDto(save);

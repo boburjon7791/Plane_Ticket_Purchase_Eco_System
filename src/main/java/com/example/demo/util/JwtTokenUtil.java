@@ -33,13 +33,15 @@ public class JwtTokenUtil {
         if(!passwordEncoder.matches(password,userDetails.getPassword())){
             throw new RuntimeException();
         }
-        return Jwts.builder()
+        String compact = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .setIssuer("http://localhost:8080")
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
+        System.out.println(compact);
+        return compact;
     }
     private static Key key(){
         byte[] bytes = Decoders.BASE64.decode(key);

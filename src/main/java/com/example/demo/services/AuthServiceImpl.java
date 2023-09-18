@@ -47,6 +47,10 @@ public class AuthServiceImpl implements AuthService {
     public void register(@Valid @NonNull AuthUserDtoR authUserDtoR,
                          HttpServletResponse res,
                          HttpServletRequest req){
+        if(authUserRepository.existEmail(authUserDtoR.getEmail())){
+            res.setStatus(HttpStatus.FORBIDDEN.value());
+            return;
+        }
         try {
 //            activateCodesRepository.deleteOldCodes();
             Optional<Company> byId= Optional.empty();
@@ -59,10 +63,6 @@ public class AuthServiceImpl implements AuthService {
                     authUserMapper.toEntity(authUserDtoR,byId.orElse(null));
             authUser.setPassword(passwordEncoder.encode(authUser.getPassword()));
             authUser.setBlocked(true);
-            if(authUserRepository.existEmail(authUserDtoR.getEmail())){
-                res.setStatus(HttpStatus.FORBIDDEN.value());
-                return;
-            }
             AuthUser saved = authUserRepository.save(authUser);
             String email = saved.getEmail();
             ActivateCodes activateCodes = ActivateCodes.builder()

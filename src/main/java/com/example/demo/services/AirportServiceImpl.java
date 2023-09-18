@@ -29,6 +29,9 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public AirportDtoR createAirport(AirportDtoR airportDtor, HttpServletResponse res) {
         try {
+            if (airportRepository.existsAirportByName(airportDtor.name)) {
+                throw new ForbiddenAccessException();
+            }
             UUID companyId = airportDtor.getCompanyId();
             Optional<Company> byId = companyRepository.findById(companyId);
             Company company = byId.orElse(null);
