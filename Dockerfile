@@ -1,4 +1,6 @@
 FROM ubuntu:latest
 LABEL authors="Boburjon"
 
-ENTRYPOINT ["top", "-b"]
+COPY build/libs/demo-0.0.1-SNAPSHOT.jar /app/demo.jar
+
+ENTRYPOINT ["java", "-jar", "/app/demo.jar"]
