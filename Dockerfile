@@ -1,5 +1,5 @@
 # Asosiy image sifatida OpenJDK 17 ni tanlaymiz
-FROM openjdk:17.0.4-jdk
+FROM openjdk:17-jdk
 
 # Muallif ma'lumotlarini belgilaymiz
 LABEL authors="Boburjon"
