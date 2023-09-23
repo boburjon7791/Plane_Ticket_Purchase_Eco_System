@@ -4,7 +4,7 @@ COPY . /app
 
 RUN gradle build
 
-FROM registry.access.redhat.com/ubi8/openjdk-17:0.4
+FROM registry.access.redhat.com/ubi8/openjdk-17:1.14
 
 COPY --from=0 /app/build/libs/*.jar /demo-0.0.1-SNAPSHOT.jar.jar
 
