@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM debian:bullseye-slim
 
 # wget va unzip o'rnatish
 RUN apt-get update && apt-get install -y wget unzip
