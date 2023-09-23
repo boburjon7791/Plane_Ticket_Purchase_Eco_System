@@ -12,7 +12,7 @@ COPY build.gradle gradlew /app/
 COPY gradle /app/gradle
 
 # Gradle ni ishga tushirib lozimli kutubxonalarni yuklab olamiz
-#RUN ./gradlew build --no-daemon || return 0
+RUN ./gradlew build --no-daemon || return 0
 
 # Manba kodni image ga nusxa olamiz
 COPY src /app/src
