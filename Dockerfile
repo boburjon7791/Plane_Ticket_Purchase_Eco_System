@@ -1,5 +1,8 @@
 FROM openjdk:17
 
+# Install wget
+RUN apt-get update && apt-get install -y wget
+
 # Gradle 8.2.1-ni o'rnatish
 RUN wget https://services.gradle.org/distributions/gradle-8.2.1-bin.zip -P /tmp && \
     unzip -d /opt/gradle /tmp/gradle-*.zip && \
