@@ -12,13 +12,13 @@ COPY build.gradle gradlew /app/
 COPY gradle /app/gradle
 
 # Gradle ni ishga tushirib lozimli kutubxonalarni yuklab olamiz
-#RUN ./gradlew build --no-daemon
-#|| return 0
+RUN ./gradlew build --no-daemon
+
 # Manba kodni image ga nusxa olamiz
 COPY src /app/src
 
 # Jar faylini yaratamiz
-#RUN ./gradlew build --no-daemon
+RUN ./gradlew build --no-daemon
 
 # Jar faylini ishga tushirish uchun kirish nuqtasini belgilaymiz
 ENTRYPOINT ["java", "-jar", "/app/build/libs/demo-0.0.1-SNAPSHOT.jar"]
