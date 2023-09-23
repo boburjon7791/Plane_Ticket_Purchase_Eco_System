@@ -18,7 +18,7 @@ COPY gradle /app/gradle
 COPY src /app/src
 
 # Jar faylini yaratamiz
-RUN ./gradlew build --no-daemon
+#RUN ./gradlew build --no-daemon
 
 # Jar faylini ishga tushirish uchun kirish nuqtasini belgilaymiz
 ENTRYPOINT ["java", "-jar", "/app/build/libs/demo-0.0.1-SNAPSHOT.jar"]
