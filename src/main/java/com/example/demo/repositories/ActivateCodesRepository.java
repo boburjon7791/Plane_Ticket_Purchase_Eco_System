@@ -20,11 +20,11 @@ public interface ActivateCodesRepository extends JpaRepository<ActivateCodes, In
   @Modifying
   @Transactional
   @Async
-  @Query(nativeQuery = true,value = "delete from system_of_airline.activate_codes ac where ac.valid<now()")
+  @Query(nativeQuery = true,value = "delete from activate_codes ac where ac.valid<now()")
   void deleteOldCodes();
 
   @Modifying
   @Transactional
-  @Query(nativeQuery = true,value = "delete from system_of_airline.activate_codes ac where ac.auth_user_id=?1")
+  @Query(nativeQuery = true,value = "delete from activate_codes ac where ac.auth_user_id=?1")
   void deleteOldCodes(UUID userId);
 }

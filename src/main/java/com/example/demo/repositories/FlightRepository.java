@@ -18,6 +18,6 @@ public interface FlightRepository extends JpaRepository<Flight, UUID>, JpaSpecif
     @Query(value = "from Flight f where f.authUsers=?1")
     Page<Flight> findAllByAuthUserId(AuthUser authUser, Pageable pageable);
 
-    @Query(nativeQuery = true,value = "select * from system_of_airline.flight f where date(f.from_time)=?1")
+    @Query(nativeQuery = true,value = "select * from flight f where date(f.from_time)=?1")
     List<Flight> findAllByDate(LocalDate time);
 }

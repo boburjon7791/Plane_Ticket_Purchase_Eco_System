@@ -22,7 +22,7 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, UUID>, JpaSp
    void unblockUserById(String email);
 
    @Modifying()
-   @Query(nativeQuery = true,value = "update system_of_airline.auth_user set role='AGENT',company_id=?1 where email=?2")
+   @Query(nativeQuery = true,value = "update auth_user set role='AGENT',company_id=?1 where email=?2")
    void setAgentRole(UUID companyId,String email);
 
    @Modifying
