@@ -1,13 +1,12 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.FlightDto;
 import com.example.demo.dtoRequest.FlightDtoR;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public interface FlightService {

@@ -38,28 +38,24 @@ public class SecurityConfiguration {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(registry -> registry.anyRequest().permitAll())
-                .exceptionHandling(errorConfig -> {
-                    errorConfig.authenticationEntryPoint((request, response, authException) -> {
-                        ErrorDto errorDto = new ErrorDto(request.getRequestURI(), 401,
-                                new Date(), authException.getMessage());
-                        ServletOutputStream outputStream = response.getOutputStream();
-                        mapper.writeValue(outputStream, errorDto);
-                        response.setStatus(401);
-                        outputStream.flush();
-                        outputStream.close();
-                    });
-                })
-                .exceptionHandling(errorConfig -> {
-                    errorConfig.accessDeniedHandler((request, response, accessDeniedException) -> {
-                        ErrorDto errorDto = new ErrorDto(request.getRequestURI(), 403,
-                                new Date(), accessDeniedException.getMessage());
-                        ServletOutputStream outputStream = response.getOutputStream();
-                        mapper.writeValue(outputStream, errorDto);
-                        response.setStatus(403);
-                        outputStream.flush();
-                        outputStream.close();
-                    });
-                })
+                .exceptionHandling(errorConfig -> errorConfig.authenticationEntryPoint((request, response, authException) -> {
+                    ErrorDto errorDto = new ErrorDto(request.getRequestURI(), 401,
+                            new Date(), authException.getMessage());
+                    ServletOutputStream outputStream = response.getOutputStream();
+                    mapper.writeValue(outputStream, errorDto);
+                    response.setStatus(401);
+                    outputStream.flush();
+                    outputStream.close();
+                }))
+                .exceptionHandling(errorConfig -> errorConfig.accessDeniedHandler((request, response, accessDeniedException) -> {
+                    ErrorDto errorDto = new ErrorDto(request.getRequestURI(), 403,
+                            new Date(), accessDeniedException.getMessage());
+                    ServletOutputStream outputStream = response.getOutputStream();
+                    mapper.writeValue(outputStream, errorDto);
+                    response.setStatus(403);
+                    outputStream.flush();
+                    outputStream.close();
+                }))
                 .addFilterBefore(new JwtTokenFilter(service), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

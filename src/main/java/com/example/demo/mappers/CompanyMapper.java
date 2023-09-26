@@ -1,6 +1,5 @@
 package com.example.demo.mappers;
 
-import com.example.demo.dtoRequest.CityDtoR;
 import com.example.demo.dtoRequest.CompanyDtoR;
 import com.example.demo.entities.Company;
 import org.mapstruct.Mapper;

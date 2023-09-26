@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dtoRequest.FlightDtoR;
-import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.services.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

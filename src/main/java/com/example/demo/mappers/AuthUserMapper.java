@@ -1,6 +1,5 @@
 package com.example.demo.mappers;
 
-import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.entities.Auditable;
 import com.example.demo.entities.AuthUser;
@@ -9,8 +8,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 import java.util.UUID;
 
 @Mapper(componentModel = "spring")
