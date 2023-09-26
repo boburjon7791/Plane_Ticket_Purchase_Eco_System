@@ -3,13 +3,14 @@ package com.example.demo.mappers;
 import com.example.demo.dtoRequest.AirportDtoR;
 import com.example.demo.entities.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 @Component
 public interface AirportMapper {
-//    AirportMapper AIRPORT_MAPPER = Mappers.getMapper(AirportMapper.class);
+    AirportMapper AIRPORT_MAPPER = Mappers.getMapper(AirportMapper.class);
     default Airport toEntity(AirportDtoR airportDtoR,Company company){
         return Airport.builder()
                 .name(airportDtoR.getName())

@@ -1,11 +1,16 @@
 package com.example.demo.util;
-import lombok.NonNull;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.*;
+import com.example.demo.exceptions.NotFoundException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.ZoneId;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class BaseUtil {
     public static final Collection<String> cities = new HashSet<>();
@@ -44,6 +49,7 @@ public class BaseUtil {
         return ZoneId.getAvailableZoneIds()
                 .stream()
                 .filter(s -> ZoneId.of(s).getRules().toString().equals(gmt))
-                .findFirst().orElseThrow();
+                .findFirst()
+                .orElseThrow(NotFoundException::new);
     }
 }

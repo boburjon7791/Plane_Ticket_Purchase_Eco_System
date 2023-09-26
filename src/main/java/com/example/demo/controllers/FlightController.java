@@ -1,13 +1,10 @@
 package com.example.demo.controllers;
 
-import java.time.LocalDate;
-import java.util.List;
 import com.example.demo.dtoRequest.FlightDtoR;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.services.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -17,7 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,7 +25,6 @@ import java.util.UUID;
 @PreAuthorize("hasRole('AGENT')")
 public class FlightController {
     public final FlightService flightService;
-    private final AuthUserRepository authUserRepository;
 
     @PostMapping("/create")
     public ResponseEntity<UUID> createFlight(@RequestBody @Valid FlightDtoR flightDtoR, @RequestParam Map<String,String> param){
@@ -70,13 +67,6 @@ public class FlightController {
     public void cancelFlight(@PathVariable UUID id, @RequestParam UUID userID){
         flightService.flightCancel(id,userID);
     }
-//    @DeleteMapping("/delete/{id}")
-//    @Transactional
-//    @CacheEvict(key = "#id",value = "flights")
-    public void deleteFlight(@PathVariable UUID id){
-        flightService.flightDelete(id);
-    }
-
     @GetMapping("/get-with-date")
     @PreAuthorize("isAuthenticated()")
     public List<FlightDtoR> getWithDate(@RequestParam LocalDate time){

@@ -15,7 +15,6 @@ public interface FlightService {
     FlightDtoR flightEdit(FlightDtoR flightDtoR, Map<String, String> param);
     FlightDtoR flightsGet(UUID id);
     List<FlightDtoR> flightsGet(LocalDate time);
-    void flightDelete(UUID id);
     Page<FlightDtoR> getAllFlights(int limit, int page);
 
     void flightReserve(UUID id, UUID userID);

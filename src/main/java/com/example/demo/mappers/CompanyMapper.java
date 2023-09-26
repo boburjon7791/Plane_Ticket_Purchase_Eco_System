@@ -4,13 +4,14 @@ import com.example.demo.dtoRequest.CityDtoR;
 import com.example.demo.dtoRequest.CompanyDtoR;
 import com.example.demo.entities.Company;
 import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 @Component
 public interface CompanyMapper {
-//    CompanyMapper COMPANY_MAPPER = Mappers.getMapper(CompanyMapper.class);
+    CompanyMapper COMPANY_MAPPER = Mappers.getMapper(CompanyMapper.class);
     default Company toEntity(CompanyDtoR companyDtoR){
         return Company.builder()
                 .name(companyDtoR.name)

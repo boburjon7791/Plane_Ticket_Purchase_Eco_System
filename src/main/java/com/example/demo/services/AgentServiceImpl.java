@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -24,13 +22,8 @@ public class AgentServiceImpl implements AgentService {
                 Keltirilgan noqulayliklar uchun uzr so'raymiz.
                 """.formatted(oldFromTime.toString(),flight.getFromTime().toString());
         Set<AuthUser> authUsers = flight.getAuthUsers();
-        try {
             Runnable runnable = () -> authUsers.forEach(authUser -> javaMailSenderService.send(authUser.getEmail(),message));
             runnable.run();
-            log.info("{} sended to {}",message,flight.getAuthUsers());
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-        }
+            log.info("{} sending to {}",message,flight.getAuthUsers());
     }
 }

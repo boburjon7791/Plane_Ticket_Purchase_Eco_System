@@ -1,7 +1,6 @@
 package com.example.demo.services;
 
 
-import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.Company;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,7 +26,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public AuthUserDtoR updateAuthUser(AuthUserDtoR authUserDtoR) {
-        try {
             Optional<AuthUser> optionalAuthUser = authUserRepository.findById(authUserDtoR.getId());
             optionalAuthUser.ifPresent(authUser -> {
                 if (!authUser.getRole().name().equals(authUserDtoR.getRole())) {
@@ -65,19 +62,5 @@ public class UserServiceImpl implements UserService {
             AuthUserDtoR dto = authUserMapper.toDto(saved);
             log.info("{} updated", dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-            return null;
-        }
-    }
-
-    private void setNull(AuthUserDto dto) {
-        dto.getCompany().setAgent(null);
-        dto.getCompany().setAirports(null);
-
-        dto.getFlight().setFrom(null);
-
-        dto.getFlight().setTo(null);
     }
 }

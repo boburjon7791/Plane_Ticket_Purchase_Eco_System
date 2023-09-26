@@ -4,6 +4,7 @@ import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.entities.ActivateCodes;
 import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.Company;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.mappers.AuthUserMapper;
 import com.example.demo.repositories.ActivateCodesRepository;
 import com.example.demo.repositories.AuthUserRepository;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,8 +51,6 @@ public class AuthServiceImpl implements AuthService {
             res.setStatus(HttpStatus.FORBIDDEN.value());
             return;
         }
-        try {
-//            activateCodesRepository.deleteOldCodes();
             Optional<Company> byId= Optional.empty();
             if (authUserDtoR.companyId!=null) {
                 UUID companyId = authUserDtoR.getCompanyId();
@@ -77,22 +75,13 @@ public class AuthServiceImpl implements AuthService {
             JwtTokenUtil.addCookie(req,res,"email",saved.getEmail());
             authUserMapper.toDto(saved);
             log.info("{} saved",authUser);
-        }catch (Exception e){
-            e.printStackTrace();
-            log.warn("{}", Arrays.toString(e.getStackTrace()));
-//            log.warn("{}", e.getCause().toString());
-            log.warn("{}",e.getLocalizedMessage());
-        }
     }
     @Override
     @Transactional
     public void activate(@NonNull Integer code, @NonNull String email,
                          HttpServletRequest req,HttpServletResponse res) throws ConstraintViolationException {
-        ActivateCodes byCode=null;
-        try {
-//            activateCodesRepository.deleteOldCodes();
-            byCode = activateCodesRepository.findById(code).orElseThrow();
-            check(byCode);
+        ActivateCodes byCode = activateCodesRepository.findById(code)
+                .orElseThrow(NotFoundException::new);
             System.out.println("when activate byCode.getValid() = " + byCode.getValid());
             if (byCode.getValid().isBefore(LocalDateTime.now())) {
                 res.setStatus(400);
@@ -106,44 +95,29 @@ public class AuthServiceImpl implements AuthService {
                 authUser.setBlocked(false);
                 authUserRepository.save(authUser);
                 res.setStatus(200);
-//                activateCodesRepository.deleteByCode(code);
                 log.info("{} acivated",authUser);
                 JwtTokenUtil.removeCookie(req,res,"email",authUser.getEmail());
             }else {
                 res.setStatus(400);
             }
-        } catch (Exception e){
-            e.printStackTrace();
-            res.setStatus(500);
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-        }
     }
-    private static void check(@Valid ActivateCodes activateCodes){}
 
     @Override
     @Async
     public void generateAgainActivationCode(@NonNull String email, HttpServletRequest req, HttpServletResponse res) {
-        try {
-//            activateCodesRepository.deleteOldCodes();
             AuthUser authUser = authUserRepository.findByEmailSpecial(email);
             ActivateCodes activateCodes = ActivateCodes.builder()
                     .authUser(authUser)
                     .build();
-            check(activateCodes);
             authUser.getActivateCodes().forEach(System.out::println);
             activateCodesRepository.save(activateCodes);
             JwtTokenUtil.addCookie(req,res,"email",authUser.getEmail());
             javaMailSenderService.send(activateCodes,specialMessage);
             log.info("generated activation code for {}",authUser);
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-        }
     }
 
     @Override
     public AuthUserDtoR login(String email, String password, HttpServletResponse res) {
-//        activateCodesRepository.deleteOldCodes();
         String s = jwtTokenUtil.generateToken(email, password);
         res.setHeader("Authorization","Bearar "+s);
         AuthUser byEmailSpecial = authUserRepository.findByEmailSpecial(email);
@@ -152,14 +126,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthUserDtoR get(UUID id) {
-        try {
-            AuthUser authUser = authUserRepository.findById(id).orElseThrow();
+            AuthUser authUser = authUserRepository.findById(id)
+                    .orElseThrow(NotFoundException::new);
             log.info("{} get info about self",authUser);
             return authUserMapper.toDto(authUser);
-        }catch (Exception e){
-            e.printStackTrace();
-            log.warn("{}",Arrays.toString(e.getStackTrace()));
-            throw new RuntimeException();
-        }
     }
 }

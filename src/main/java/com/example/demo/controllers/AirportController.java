@@ -1,12 +1,10 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.AirportDto;
 import com.example.demo.dtoRequest.AirportDtoR;
 import com.example.demo.services.AirportService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -58,11 +56,5 @@ public class AirportController {
         airportDtor.setName(name);
         AirportDtoR airport = airportService.updateAirport(airportDtor);
         return new ResponseEntity<>(airport.getId(),HttpStatus.OK);
-    }
-//    @DeleteMapping("/delete/{name}")
-//    @Transactional
-//    @CacheEvict(key = "#name",value = "airports")
-    public void deleteAirport(@PathVariable String name){
-        airportService.deleteAirport(name);
     }
 }

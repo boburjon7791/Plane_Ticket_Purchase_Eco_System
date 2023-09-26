@@ -1,11 +1,9 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.AirportDto;
-import com.example.demo.dto.CityDto;
 import com.example.demo.dtoRequest.CityDtoR;
-import com.example.demo.entities.Airport;
 import com.example.demo.entities.City;
 import com.example.demo.exceptions.ForbiddenAccessException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.mappers.CityMapper;
 import com.example.demo.repositories.CityRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +27,8 @@ public class CityServiceImpl implements CityService {
         Set<String> zoneIds = ZoneId.getAvailableZoneIds();
         Optional<String> first = zoneIds.stream().filter(s -> s.toUpperCase().contains(city))
                 .findFirst();
-        return ZoneId.of(first.orElseThrow()).getRules().toString();
+        return ZoneId.of(first
+                .orElseThrow(NotFoundException::new)).getRules().toString();
     }
     @Override
     public CityDtoR cityCreate(CityDtoR cityDtoR) {
@@ -45,21 +44,12 @@ public class CityServiceImpl implements CityService {
             City save = cityRepository.save(city);
             CityDtoR dto = cityMapper.toDto(save);
             log.info("{} created",dto);
-//            setNull(dto);
             return dto;
         }catch (Exception e){
             e.printStackTrace();
             log.info("{}", Arrays.toString(e.getStackTrace()));
             return null;
         }
-    }
-
-    private void setNull(CityDto dto) {
-        dto.getAirports().forEach(airport -> {
-            airport.setCities(null);
-            airport.setCompany(null);
-            airport.setFlights(null);
-        });
     }
 
     @Override
@@ -69,8 +59,8 @@ public class CityServiceImpl implements CityService {
             String s = setGmt(setGmt(city.getName()));
             city.setGmt(s);
         }
-        try {
-            City city1 = cityRepository.findById(city.getId()).orElseThrow();
+            City city1 = cityRepository.findById(city.getId())
+                    .orElseThrow(NotFoundException::new);
                 if (!city1.getAirports().equals(city.getAirports())) {
                     throw new ForbiddenAccessException();
                 }
@@ -80,44 +70,19 @@ public class CityServiceImpl implements CityService {
             City save = cityRepository.save(city);
             CityDtoR dto = cityMapper.toDto(save);
             log.info("{} updated",dto);
-//            setNull(dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}",Arrays.toString(e.getStackTrace()));
-            return null;
-        }
     }
 
     @Override
     public CityDtoR cityRead(String name) {
-        try {
             City city = cityRepository.findByName(name);
             CityDtoR dto = cityMapper.toDto(city);
             log.info("{} gave",dto);
-//            setNull(dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}",Arrays.toString(e.getStackTrace()));
-            return null;
-        }
-    }
-
-    @Override
-    public void cityDelete(String name) {
-        try {
-            cityRepository.deleteByName(name);
-            log.info("{} city deleted",name);
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}",Arrays.toString(e.getStackTrace()));
-        }
     }
 
     @Override
     public Page<CityDtoR> getAllCities(int size,int page) {
-        try {
             Pageable pageable = PageRequest.of(page,size);
             Page<City> all = cityRepository.findAll(pageable);
             if (all.getContent().size()<all.getSize()) {
@@ -125,32 +90,19 @@ public class CityServiceImpl implements CityService {
                 Page<City> empty = new PageImpl<>(all1);
                 Page<CityDtoR> dtoPage = cityMapper.toDtoPage(empty);
                 log.info("{} gave",empty);
-//                dtoPage.forEach(this::setNull);
                 return dtoPage;
             }
             Page<CityDtoR> dtoPage = cityMapper.toDtoPage(all);
-//            dtoPage.forEach(this::setNull);
             log.info("{} gave",dtoPage);
             return dtoPage;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}",Arrays.toString(e.getStackTrace()));
-            return null;
-        }
     }
 
     @Override
     public CityDtoR cityRead(UUID id) {
-        try {
             Optional<City> byId = cityRepository.findById(id);
-            CityDtoR dto = cityMapper.toDto(byId.orElseThrow());
+            CityDtoR dto = cityMapper.toDto(byId
+                    .orElseThrow(NotFoundException::new));
             log.info("{} gave",dto);
-//            setNull(dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}",Arrays.toString(e.getStackTrace()));
-            return null;
-        }
     }
 }

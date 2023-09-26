@@ -5,6 +5,7 @@ import com.example.demo.entities.Airport;
 import com.example.demo.entities.City;
 import com.example.demo.entities.Flight;
 import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 @Component
 public interface FlightMapper {
-//    FlightMapper FLIGHT_MAPPER = Mappers.getMapper(FlightMapper.class);
+    FlightMapper FLIGHT_MAPPER = Mappers.getMapper(FlightMapper.class);
     default Flight toEntity(FlightDtoR flightDtoR, City to, City from, Airport airport){
         return Flight.builder()
                 .id(flightDtoR.getId())

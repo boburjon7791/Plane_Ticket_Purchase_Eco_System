@@ -1,10 +1,10 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.AirportDto;
 import com.example.demo.dtoRequest.AirportDtoR;
 import com.example.demo.entities.Airport;
 import com.example.demo.entities.Company;
 import com.example.demo.exceptions.ForbiddenAccessException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.mappers.AirportMapper;
 import com.example.demo.repositories.AirportRepository;
 import com.example.demo.repositories.CompanyRepository;
@@ -17,7 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -28,7 +30,6 @@ public class AirportServiceImpl implements AirportService {
     public final AirportMapper airportMapper;
     @Override
     public AirportDtoR createAirport(AirportDtoR airportDtor, HttpServletResponse res) {
-        try {
             if (airportRepository.existsAirportByName(airportDtor.name)) {
                 throw new ForbiddenAccessException();
             }
@@ -40,37 +41,23 @@ public class AirportServiceImpl implements AirportService {
             AirportDtoR dto = airportMapper.toDto(save,save.getCompany());
             res.setStatus(201);
             log.info("{} saved",dto);
-//            setNull(dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-            return null;
-        }
     }
 
     @Override
     public AirportDtoR getAirport(String name) {
-        try {
             Airport airport = airportRepository.findByName(name);
             AirportDtoR dto = airportMapper.toDto(airport, airport.getCompany());
             log.info("{} gave",dto);
-//            setNull(dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-            return null;
-        }
     }
 
     @Override
     public AirportDtoR updateAirport(AirportDtoR airportDtor) {
-        try {
             UUID companyId = airportDtor.getCompanyId();
             Optional<Company> byId = companyRepository.findById(companyId);
-            Airport airport = airportMapper.toEntity(airportDtor,byId.orElseThrow());
-            Airport airport1 = airportRepository.findById(airport.getId()).orElseThrow();
+            Airport airport = airportMapper.toEntity(airportDtor,byId.orElseThrow(NotFoundException::new));
+            Airport airport1 = airportRepository.findById(airport.getId()).orElseThrow(NotFoundException::new);
             if (!airport1.getCompany().getId().equals(airport.getCompany().getId())) {
                 throw new ForbiddenAccessException();
             }
@@ -83,29 +70,11 @@ public class AirportServiceImpl implements AirportService {
             Airport save = airportRepository.save(airport);
             AirportDtoR dto = airportMapper.toDto(save, save.getCompany());
             log.info("{} updated",dto);
-//            setNull(dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-            return null;
-        }
-    }
-
-    @Override
-    public void deleteAirport(String name) {
-        try {
-            airportRepository.deleteByName(name);
-            log.info("{} airport deleted",name);
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-        }
     }
 
     @Override
     public Page<AirportDtoR> getAll(int size, int page) {
-        try {
             Pageable pageable = PageRequest.of(page,size);
             Page<Airport> all = airportRepository.findAll(pageable);
             if (all.getContent().size()<all.getSize()) {
@@ -117,45 +86,15 @@ public class AirportServiceImpl implements AirportService {
             }
             Page<AirportDtoR> dtoPage = airportMapper.toDtoPage(all);
             log.info("gave all");
-//            dtoPage.forEach(this::setNull);
             return dtoPage;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}",Arrays.toString(e.getStackTrace()));
-            return null;
-        }
     }
 
     @Override
     public AirportDtoR getAirport(UUID id) {
-        try {
             Optional<Airport> byId = airportRepository.findById(id);
-            AirportDtoR dto = airportMapper.toDto(byId.orElseThrow(), byId.orElseThrow().getCompany());
+            AirportDtoR dto = airportMapper.toDto(byId.orElseThrow(NotFoundException::new),
+                    byId.orElseThrow(NotFoundException::new).getCompany());
             log.info("{} gave",dto);
-//            setNull(dto);
             return dto;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.info("{}",Arrays.toString(e.getStackTrace()));
-            return null;
-        }
-    }
-
-    private void setNull(AirportDto dto) {
-        dto.getCompany().setAirports(null);
-        dto.getCompany().setAgent(null);
-
-        dto.getCities().forEach(city -> {
-            city.setAirports(null);
-            city.setFlights(null);
-            city.setFlights2(null);
-        });
-
-        dto.getFlights().forEach(flight -> {
-            flight.setAirport(null);
-            flight.setAuthUsers(null);
-            flight.setTo(null);
-            flight.setFrom(null);
-        });
     }
 }

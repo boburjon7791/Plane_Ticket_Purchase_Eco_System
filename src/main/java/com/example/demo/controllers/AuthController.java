@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.AuthUserDto;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.services.AuthService;
@@ -15,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 @RestController

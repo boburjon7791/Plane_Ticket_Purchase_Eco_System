@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -21,7 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        try {
             AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
             return User.builder()
                         .username(email)
@@ -31,10 +28,5 @@ public class CustomUserDetailsService implements UserDetailsService {
                         .accountLocked(authUser.getBlocked())
                         .accountExpired(false)
                         .build();
-            }catch (Exception e){
-                e.printStackTrace();
-            log.info("{}", Arrays.toString(e.getStackTrace()));
-                throw new RuntimeException();
-            }
         }
 }

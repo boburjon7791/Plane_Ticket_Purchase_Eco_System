@@ -12,7 +12,6 @@ public interface CompanyService {
     CompanyDtoR companyCreate(CompanyDtoR companyDtoR);
     CompanyDtoR companyEdit(CompanyDtoR companyDtoR);
     CompanyDtoR companyGet(String name);
-    void companyDelete(String name);
     Page<CompanyDtoR> getAllCompanies(int size,int limit);
 
     CompanyDtoR companyGet(UUID id);

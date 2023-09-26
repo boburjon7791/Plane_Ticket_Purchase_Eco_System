@@ -1,6 +1,5 @@
 package com.example.demo.util;
 
-import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.services.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -59,7 +58,7 @@ public class JwtTokenUtil {
             return expiration.after(new Date());
         }catch (Exception e){
             e.printStackTrace();
-            res.setStatus(400);
+            res.setStatus(401);
             return false;
         }
     }
@@ -91,27 +90,7 @@ public class JwtTokenUtil {
             return claims.getSubject();
         }catch (Exception e){
             e.printStackTrace();
-            return null;
-        }
-    }
-    public static String expireToken(@NonNull String token){
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            claims.setExpiration(new Date(System.currentTimeMillis()-1));
-            return Jwts.builder()
-                    .signWith(key(),SignatureAlgorithm.HS256)
-                    .setIssuer("http://localhost:8080")
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis()-1))
-                    .setSubject(claims.getSubject())
-                    .compact();
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException();
         }
     }
 

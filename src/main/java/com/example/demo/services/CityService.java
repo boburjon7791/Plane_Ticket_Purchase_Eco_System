@@ -13,7 +13,6 @@ public interface CityService {
     CityDtoR cityCreate(CityDtoR cityDtoR);
     CityDtoR cityEdit(CityDtoR cityDtoR);
     CityDtoR cityRead(String name);
-    void cityDelete(String name);
     Page<CityDtoR> getAllCities(int page,int size);
 
     CityDtoR cityRead(UUID id);

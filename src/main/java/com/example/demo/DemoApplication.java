@@ -1,15 +1,17 @@
 package com.example.demo;
 
-import com.example.demo.controllers.CityController;
-import com.example.demo.entities.*;
+import com.example.demo.entities.Auditable;
+import com.example.demo.entities.AuthUser;
+import com.example.demo.entities.City;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.repositories.ActivateCodesRepository;
 import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CityRepository;
 import com.example.demo.util.BaseUtil;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -20,16 +22,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -53,21 +51,21 @@ public class DemoApplication {
    @Bean
    public CommandLineRunner runner(){
 	   return args -> {
-		   try {
 			   Set<String> zoneIds = ZoneId.getAvailableZoneIds();
 			   Collection<String> cityNames = BaseUtil.cities;
 			   Collection<City> cities = new HashSet<>();
 			   cityNames.forEach(s -> {
 				   Optional<String> first = zoneIds.stream().filter(s1 -> s1.toUpperCase().contains(s.toUpperCase()))
 						   .findFirst();
-				   String gmt = ZoneId.of(first.orElseThrow()).getRules().toString();
+				   String gmt = ZoneId.of(first
+						   .orElseThrow(NotFoundException::new)).getRules().toString();
 				   City city = City.builder()
 						   .gmt(gmt)
 						   .name(s).build();
 				   cities.add(city);
 				   System.out.println(city);
-				   cityRepository.save(city);
 			   });
+			   cityRepository.saveAll(cities);
 
 			   AuthUser admin = AuthUser.builder()
 					   .email("admin123@mail.com")
@@ -79,10 +77,9 @@ public class DemoApplication {
 					   .build();
 			   authUserRepository.save(admin);
 			   System.out.println("admin = " + admin);
-		   }catch (Exception ignore){}
 	   };
    }
-    @Bean
+        @Bean
 	public SecurityScheme createAPIKeyScheme() {
 		return new SecurityScheme().type(SecurityScheme.Type.HTTP)
 				.bearerFormat("JWT")

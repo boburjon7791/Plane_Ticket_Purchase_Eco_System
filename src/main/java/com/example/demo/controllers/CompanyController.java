@@ -1,11 +1,9 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.CompanyDto;
 import com.example.demo.dtoRequest.CompanyDtoR;
 import com.example.demo.services.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -59,12 +57,5 @@ public class CompanyController {
         companyDtoR.setName(name);
         CompanyDtoR edited = companyService.companyEdit(companyDtoR);
         return new ResponseEntity<>(edited.getId(),HttpStatus.OK);
-    }
-
-//    @DeleteMapping("/delete/{name}")
-//    @Transactional
-//    @CacheEvict(key = "#name",value = "companies")
-    public void deleteCompany(@PathVariable String name){
-        companyService.companyDelete(name);
     }
 }

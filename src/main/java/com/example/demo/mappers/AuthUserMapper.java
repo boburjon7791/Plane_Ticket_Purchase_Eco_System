@@ -6,6 +6,7 @@ import com.example.demo.entities.Auditable;
 import com.example.demo.entities.AuthUser;
 import com.example.demo.entities.Company;
 import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Mapper(componentModel = "spring")
 @Component
 public interface AuthUserMapper {
-//   AuthUserMapper AUTH_USER_MAPPER = Mappers.getMapper(AuthUserMapper.class);
+   AuthUserMapper AUTH_USER_MAPPER = Mappers.getMapper(AuthUserMapper.class);
    default AuthUser toEntity(AuthUserDtoR authUserDtoR, Company company){
       return AuthUser.builder()
               .id(authUserDtoR.getId())

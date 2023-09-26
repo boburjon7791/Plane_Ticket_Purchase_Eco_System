@@ -1,11 +1,9 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.CityDto;
 import com.example.demo.dtoRequest.CityDtoR;
 import com.example.demo.services.CityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -15,8 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.ZoneOffset;
-import java.time.zone.ZoneRules;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -63,13 +59,6 @@ public class CityController {
         cityDtoR.setName(name);
         CityDtoR cityEdit = cityService.cityEdit(cityDtoR);
         return new ResponseEntity<>(cityEdit.getId(),HttpStatus.OK);
-    }
-
-//    @DeleteMapping("/delete/{name}")
-//    @Transactional
-//    @CacheEvict(key = "#name",value = "cities")
-    public void deleteCity(@PathVariable String name){
-        cityService.cityDelete(name);
     }
 
     @PreAuthorize("permitAll()")
