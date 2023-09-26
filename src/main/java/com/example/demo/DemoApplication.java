@@ -51,33 +51,44 @@ public class DemoApplication {
    @Bean
    public CommandLineRunner runner(){
 	   return args -> {
-			   Set<String> zoneIds = ZoneId.getAvailableZoneIds();
-			   Collection<String> cityNames = BaseUtil.cities;
-			   Collection<City> cities = new HashSet<>();
-			   cityNames.forEach(s -> {
-				   Optional<String> first = zoneIds.stream().filter(s1 -> s1.toUpperCase().contains(s.toUpperCase()))
-						   .findFirst();
-				   String gmt = ZoneId.of(first
-						   .orElseThrow(NotFoundException::new)).getRules().toString();
-				   City city = City.builder()
-						   .gmt(gmt)
-						   .name(s).build();
-				   cities.add(city);
-				   System.out.println(city);
-			   });
-			   cityRepository.saveAll(cities);
-
-			   AuthUser admin = AuthUser.builder()
-					   .email("admin123@mail.com")
-					   .blocked(false)
-					   .firstName("root")
-					   .lastName("admin")
-					   .password(passwordEncoder.encode("11223344"))
-					   .role(Auditable.Role.ADMIN)
-					   .build();
-			   authUserRepository.save(admin);
-			   System.out.println("admin = " + admin);
-	   };
+		   try {
+			   City byName = cityRepository.findByName("Tashkent");
+			   if (byName != null) {
+				   System.out.println("byName = " + byName);
+			   }else{
+				   Set<String> zoneIds = ZoneId.getAvailableZoneIds();
+				   Collection<String> cityNames = BaseUtil.cities;
+				   Collection<City> cities = new HashSet<>();
+				   cityNames.forEach(s -> {
+					   Optional<String> first = zoneIds.stream().filter(s1 -> s1.toUpperCase().contains(s.toUpperCase()))
+							   .findFirst();
+					   try {
+						   String gmt = ZoneId.of(first
+								   .orElseThrow(NotFoundException::new)).getRules().toString();
+						   City city = City.builder()
+								   .gmt(gmt)
+								   .name(s).build();
+						   cities.add(city);
+						   System.out.println(city);
+						   cityRepository.saveAll(cities);
+					   } catch (Exception ignore) {
+					   }
+				   });
+			   }
+		   }catch (Exception ignore){}
+					   try {
+					   AuthUser admin = AuthUser.builder()
+							   .email("admin123@mail.com")
+							   .blocked(false)
+							   .firstName("root")
+							   .lastName("admin")
+							   .password(passwordEncoder.encode("11223344"))
+							   .role(Auditable.Role.ADMIN)
+							   .build();
+					   authUserRepository.save(admin);
+					   System.out.println("admin = " + admin);
+				   }catch (Exception ignore){}
+			   };
    }
         @Bean
 	public SecurityScheme createAPIKeyScheme() {
