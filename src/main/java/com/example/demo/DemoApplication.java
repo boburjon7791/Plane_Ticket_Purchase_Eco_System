@@ -24,6 +24,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -52,9 +55,10 @@ public class DemoApplication {
    public CommandLineRunner runner(){
 	   return args -> {
 		   try {
-			   City byName = cityRepository.findByName("Tashkent");
-			   if (byName != null) {
-				   System.out.println("byName = " + byName);
+			   Pageable pageable = PageRequest.of(0,1);
+			   Page<City> all = cityRepository.findAll(pageable);
+			   if (!all.isEmpty()) {
+                   log.info(all.toString());
 			   }else{
 				   Set<String> zoneIds = ZoneId.getAvailableZoneIds();
 				   Collection<String> cityNames = BaseUtil.cities;
