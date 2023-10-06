@@ -14,7 +14,7 @@ public interface ActivateCodesRepository extends JpaRepository<ActivateCodes, In
   ActivateCodes findByCode(Integer code);
 
   @Modifying
-  @Query(nativeQuery = true, value = "delete from system_of_airline.activate_codes a where a.code=?1")
+  @Query(nativeQuery = true, value = "delete from activate_codes a where a.code=?1")
   void deleteByCode(Integer code);
 
   @Modifying
