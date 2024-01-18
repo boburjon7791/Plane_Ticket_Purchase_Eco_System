@@ -34,6 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
+        //
         System.out.println("authorization = " + authorization);
         authorization=authorization.substring(7);
         if (!JwtTokenUtil.isValid(response,authorization)) {
