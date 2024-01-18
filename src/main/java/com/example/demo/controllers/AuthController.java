@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.services.AuthService;
+import com.example.demo.services.CustomUserDetails;
 import com.example.demo.util.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -48,17 +50,10 @@ public class AuthController {
                           HttpServletResponse res){
         authService.generateAgainActivationCode(email,req,res);
     }
-    @GetMapping("/{id}")
-    @Cacheable(key = "#id",value = "authUsers")
-    public ResponseEntity<AuthUserDtoR> getInfo(HttpServletRequest request,@PathVariable String id){
-        AuthUserDtoR body = authService.get(UUID.fromString(id));
-        String email = JwtTokenUtil.getEmail(request);
-        if (email==null) {
-            return null;
-        }
-        if (!email.equals(body.getEmail())) {
-            throw new ForbiddenAccessException();
-        }
+    @GetMapping("/get")
+    public ResponseEntity<AuthUserDtoR> getInfo(){
+        CustomUserDetails userDetails = (CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthUserDtoR body = authService.get(userDetails.authUser().getId());
         return ResponseEntity.ok(body);
     }
 }

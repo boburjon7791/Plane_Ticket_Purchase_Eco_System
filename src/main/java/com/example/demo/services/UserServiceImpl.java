@@ -10,6 +10,7 @@ import com.example.demo.repositories.AuthUserRepository;
 import com.example.demo.repositories.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public AuthUserDtoR updateAuthUser(AuthUserDtoR authUserDtoR) {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!userDetails.authUser().getId().equals(authUserDtoR.id)) {
+            throw new ForbiddenAccessException();
+        }
             Optional<AuthUser> optionalAuthUser = authUserRepository.findById(authUserDtoR.getId());
             optionalAuthUser.ifPresent(authUser -> {
                 if (!authUser.getRole().name().equals(authUserDtoR.getRole())) {

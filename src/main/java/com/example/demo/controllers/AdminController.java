@@ -1,10 +1,15 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dtoRequest.AuthUserDtoR;
 import com.example.demo.services.AdminService;
+import com.example.demo.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api.admin")
 public class AdminController {
     public final AdminService adminService;
+    private final AuthService authService;
 
 
     @Transactional
@@ -40,6 +46,11 @@ public class AdminController {
     @PutMapping("/set-agent/{email}")
     public void setAgent(@PathVariable String email, @RequestParam String companyId){
         adminService.setRoleAgent(email,companyId);
+    }
+    @GetMapping("/get-user/{id}")
+    public ResponseEntity<AuthUserDtoR> get(@PathVariable String id){
+        AuthUserDtoR authUserDtoR = authService.get(UUID.fromString(id));
+        return ResponseEntity.ok(authUserDtoR);
     }
 
     @Transactional

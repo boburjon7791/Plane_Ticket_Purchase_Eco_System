@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.services.CustomUserDetails;
 import com.example.demo.services.CustomUserDetailsService;
 import com.example.demo.util.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
@@ -42,9 +43,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
         String email = JwtTokenUtil.getEmail(response, authorization);
-        UserDetails userDetails = service.loadUserByUsername(email);
+        CustomUserDetails userDetails = service.loadUserByUsername(email);
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(email,null,userDetails.getAuthorities());
+                new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
         WebAuthenticationDetails details = new WebAuthenticationDetails(request);
         System.out.println(details);
         SecurityContext context = SecurityContextHolder.getContext();

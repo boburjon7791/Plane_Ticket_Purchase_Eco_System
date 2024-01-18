@@ -18,15 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final AuthUserRepository authUserRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
             AuthUser authUser = authUserRepository.findByEmailAndBlockedFalse(email);
-            return User.builder()
-                        .username(email)
-                        .password(authUser.getPassword())
-                        .credentialsExpired(false)
-                        .roles(authUser.getRole().name())
-                        .accountLocked(authUser.getBlocked())
-                        .accountExpired(false)
-                        .build();
+            return new CustomUserDetails(authUser);
         }
 }
