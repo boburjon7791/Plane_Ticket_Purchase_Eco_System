@@ -11,7 +11,7 @@ import java.util.Set;
 public record CustomUserDetails(AuthUser authUser) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(new SimpleGrantedAuthority(authUser.getRole().name()))
+        return Set.of(new SimpleGrantedAuthority(authUser.getRole().name()));
     }
 
     @Override
