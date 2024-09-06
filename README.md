@@ -1,7 +1,9 @@
 Airline Reservation System - Backend API
+
 This project is a RESTful Airline Reservation System that provides an API for managing flights, customers, agents, and administrative tasks. The system consists of three primary roles: Admin, Agent, and Customer. The system allows airlines to create and manage flights, customers to book tickets, and administrators to control the overall operation.
 
 Key Features
+
 Admin can manage cities, airports, companies, agents, customers, and flights.
 Agents can manage flight schedules, update flight details, and notify customers of important changes.
 Customers can search for flights, book and cancel tickets, and receive notifications about changes in their flights.
