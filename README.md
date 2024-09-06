@@ -12,7 +12,7 @@ Technologies Used
 RESTful API built with Java.
 Swagger for API documentation and testing.
 Spring Boot for server configuration.
-JSON/YAML format for flight data.
+JSON format for flight data.
 API Documentation
 The API is divided into three main groups, each serving a different role:
 
