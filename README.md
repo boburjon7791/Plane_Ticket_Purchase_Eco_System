@@ -24,12 +24,14 @@ Add or remove airlines (companies).
 Create, delete, or manage agents.
 Block/unblock agents and customers.
 View and control all system activities.
+
 2. Agent API
 Agents represent a company in specific airports and have the ability to:
 
 Add new flights (weekly or monthly schedules).
 Update flight times, ticket prices, and availability.
 Notify customers about flight changes (via email).
+
 3. Customer API
 Customers can:
 
